@@ -14,7 +14,13 @@ if ! command -v brew >/dev/null; then
 fi
 
 echo "Installing Brew Packages..."
-brew install git tig bit-git curl asdf zsh coreutils
+brew install git tig bit-git curl asdf zsh coreutils gemini-cli
+
+# Install gemini-cli superpowers extension
+if command -v gemini >/dev/null; then
+  echo "Installing gemini-cli superpowers extension..."
+  gemini extensions install https://github.com/obra/superpowers || true
+fi
 
 # ASDF Setup (macOS)
 if [ -f "$(brew --prefix asdf)/libexec/asdf.sh" ]; then
