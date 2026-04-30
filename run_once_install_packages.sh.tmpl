@@ -25,11 +25,7 @@ fi
 export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
 
 asdf plugin add golang || true
-asdf plugin add ruby || true
-asdf plugin add python || true
-asdf plugin add nodejs || true
-asdf plugin add kubectl || true
-asdf plugin add helm || true
+asdf plugin add terraform || true
 
 if [ -f "$HOME/.tool-versions" ]; then
     echo "Installing ASDF versions..."

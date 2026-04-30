@@ -95,7 +95,11 @@ compdef _aws_profiles asp
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # z
-[ -f /usr/local/etc/profile.d/z.sh ] && source /usr/local/etc/profile.d/z.sh
+if [ -f /opt/homebrew/etc/profile.d/z.sh ]; then
+  source /opt/homebrew/etc/profile.d/z.sh
+elif [ -f /usr/local/etc/profile.d/z.sh ]; then
+  source /usr/local/etc/profile.d/z.sh
+fi
 
 # Kubernetes
 kcdebug() { kubectl run -i --rm --tty debug --image=alpine --restart=Never -- sh }
