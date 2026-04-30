@@ -1,0 +1,10 @@
+README.md
+README-Template.md
+Makefile
+docker/
+completions/
+scripts/
+offline-packages/
+.gitignore
+.env
+.env.example
