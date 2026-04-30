@@ -10,11 +10,19 @@ fi
 # asdf
 {{ if eq .chezmoi.os "darwin" -}}
 if [ $commands[asdf] ]; then
-  asdf() {
-    unfunction "$0"
-    source $(brew --prefix asdf)/libexec/asdf.sh
-    $0 "$@"
-  }
+  if [ -f "$(brew --prefix asdf)/libexec/asdf.sh" ]; then
+    asdf() {
+      unfunction "$0"
+      source $(brew --prefix asdf)/libexec/asdf.sh
+      $0 "$@"
+    }
+  elif [ -f "$(brew --prefix asdf)/asdf.sh" ]; then
+    asdf() {
+      unfunction "$0"
+      source $(brew --prefix asdf)/asdf.sh
+      $0 "$@"
+    }
+  fi
 fi
 {{ else -}}
 if [ -f "$HOME/.asdf/asdf.sh" ]; then

@@ -29,6 +29,9 @@ KUBECONFIG_PATH=~/.kube
 KUBECONFIG=~/.kube/config
 PATH="${KREW_ROOT:-$HOME/.krew}/bin:/usr/local/sbin:$PATH"
 
+# ASDF
+PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
+
 # fzf
 FZF_DEFAULT_COMMAND='fd --type file --follow --hidden --exclude .git --color=always'
 FZF_DEFAULT_OPTS="--ansi"
