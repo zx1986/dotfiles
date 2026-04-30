@@ -9,6 +9,12 @@ VISUAL='nvim'
 
 {{ if eq .chezmoi.os "darwin" -}}
 # macOS-specific
+if [ -x /opt/homebrew/bin/brew ]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [ -x /usr/local/bin/brew ]; then
+  eval "$(/usr/local/bin/brew shellenv)"
+fi
+
 OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
 FZF_BASE="/opt/homebrew/bin/fzf"
 ZSH_FUNC_DIR="/usr/local/share/zsh/site-functions/"
