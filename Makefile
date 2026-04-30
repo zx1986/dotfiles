@@ -62,7 +62,7 @@ clean: ## Remove files managed by chezmoi and clean up third-party directories
 		echo "Chezmoi state not found or initialized."; \
 	fi
 	@echo "Cleaning up third-party tool directories..."
-	rm -rf "$(HOME)/.zprezto" "$(HOME)/.tmux" "$(HOME)/.asdf" "$(HOME)/.local/share/offline-packages"
+	rm -rf "$(HOME)/.zprezto" "$(HOME)/.tmux" "$(HOME)/.asdf"
 	@echo "Cleanup completed."
 
 .PHONY: krew
