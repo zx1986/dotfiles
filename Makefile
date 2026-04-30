@@ -1,77 +1,77 @@
 KREW=./krew-"`uname | tr '[:upper:]' '[:lower:]'`_amd64"
 
 .PHONY: init
-init: ## 初始化環境配置
-	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-	-cp -iv env.example .env
-	ln -nsiF $(PWD)/.env $(HOME)/.env
-	ln -nsiF $(PWD)/aliases $(HOME)/.aliases
-	ln -nsiF $(PWD)/terraformrc $(HOME)/.terraformrc
-	ln -nsiF $(PWD)/editorconfig $(HOME)/.editorconfig
-	ln -nsiF $(PWD)/ctags $(HOME)/.ctags
-	$(MAKE) zsh
-	$(MAKE) git
-	$(MAKE) tmux
-	$(MAKE) asdf
+init: ## Auto-detect environment and initialize dotfiles via chezmoi
+	@echo "Detected OS: $$(uname -s)"
+	@if [ "$$(uname -s)" = "Darwin" ]; then \
+		echo "Setting up macOS environment..."; \
+		if ! command -v brew >/dev/null 2>&1; then \
+			echo "Installing Homebrew..."; \
+			/bin/bash -c "$$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"; \
+		fi; \
+		echo "Looking for chezmoi..."; \
+		if ! command -v chezmoi >/dev/null 2>&1; then \
+			echo "Installing chezmoi..."; \
+			brew install chezmoi; \
+		fi; \
+		chezmoi init --apply --source "$(PWD)"; \
+	elif [ "$$(uname -s)" = "Linux" ]; then \
+		echo "Setting up Linux environment..."; \
+		if ! command -v chezmoi >/dev/null 2>&1 && [ ! -f "$(HOME)/bin/chezmoi" ]; then \
+			echo "Installing chezmoi..."; \
+			curl -fsLS https://get.chezmoi.io | sh; \
+		fi; \
+		if [ -f "$(HOME)/bin/chezmoi" ]; then \
+			"$(HOME)/bin/chezmoi" init --apply --source "$(PWD)"; \
+		elif command -v chezmoi >/dev/null 2>&1; then \
+			chezmoi init --apply --source "$(PWD)"; \
+		else \
+			echo "Error: chezmoi not found after install"; exit 1; \
+		fi; \
+	else \
+		echo "Unsupported OS: $$(uname -s)"; exit 1; \
+	fi
 
-.PHONY: git
-git: ## 配置 Git
-	brew install git tig bit-git curl
-	ln -nsiF $(PWD)/gittemplate $(HOME)/.gittemplate
-	ln -nsiF $(PWD)/gitignore $(HOME)/.gitignore
-	ln -nsiF $(PWD)/gitconfig $(HOME)/.gitconfig
-	bit complete
-	-bit
-
-.PHONY: tmux
-tmux: ## 配置 tmux
-	ln -nsiF $(PWD)/tmux.conf $(HOME)/.tmux.conf
-	mkdir -p ~/.tmux/plugins/
-	cd ~/.tmux/plugins/ && git clone https://github.com/tmux-plugins/tpm.git
-	-tmux source-file ~/.tmux.conf
-
-.PHONY: asdf
-asdf: ## 配置 asdf
-	brew install asdf
-	ln -nsiF $(PWD)/tool-versions $(HOME)/.tool-versions
-
-.PHONY: golang
-golang: ## 配置 Golang
-	-asdf plugin add golang
-	asdf install golang latest
-	curl -L https://github.com/vmware/govmomi/releases/download/v0.29.0/govc_Darwin_x86_64.tar.gz | gunzip > /usr/local/bin/govc
-	chmod +x /usr/local/bin/govc
-
-.PHONY: ruby
-ruby: ## 配置 Ruby
-	-asdf plugin add ruby
-	asdf install ruby latest
-	ln -nsiF $(PWD)/gemrc $(HOME)/.gemrc
-	ln -nsiF $(PWD)/rubocop.yml $(HOME)/.rubocop.yml
-
-.PHONY: python
-python: ## 配置 Python
-	-asdf plugin add python
-	asdf install python latest
-
-.PHONY: nodejs
-nodejs: ## 配置 NodeJS
-	-asdf plugin add nodejs
-	asdf install nodejs latest
-
-.PHONY: kube
-kube: ## 配置 Kubernetes kubectl
-	-asdf plugin add kubectl
-	asdf install kubectl latest
-	$(MAKE) krew
+.PHONY: clean
+clean: ## Remove files managed by chezmoi and clean up third-party directories
+	@echo "Looking for chezmoi binary..."
+	@if command -v chezmoi >/dev/null 2>&1; then \
+		CHEZMOI_BIN=$$(command -v chezmoi); \
+	elif [ -f "$(HOME)/bin/chezmoi" ]; then \
+		CHEZMOI_BIN="$(HOME)/bin/chezmoi"; \
+	else \
+		echo "chezmoi not installed, nothing to clean."; exit 0; \
+	fi; \
+	echo "Removing chezmoi managed files in $(HOME)..."; \
+	if $$CHEZMOI_BIN source-path >/dev/null 2>&1; then \
+		$$CHEZMOI_BIN managed -i files | while read -r file; do \
+			target="$(HOME)/$$file"; \
+			if [ -f "$$target" ] || [ -L "$$target" ]; then \
+				echo "Removing $$target"; \
+				rm -f "$$target"; \
+			fi; \
+		done; \
+		$$CHEZMOI_BIN managed -i scripts | while read -r script; do \
+			target="$(HOME)/$$script"; \
+			if [ -f "$$target" ] || [ -L "$$target" ]; then \
+				echo "Removing $$target"; \
+				rm -f "$$target"; \
+			fi; \
+		done; \
+	else \
+		echo "Chezmoi state not found or initialized."; \
+	fi
+	@echo "Cleaning up third-party tool directories..."
+	rm -rf "$(HOME)/.zprezto" "$(HOME)/.tmux" "$(HOME)/.asdf"
+	@echo "Cleanup completed."
 
 .PHONY: krew
 krew: ## 配置 Kubernetes kubectl 外掛管理器
-	set -x; cd "$(mktemp -d)" && \
+	set -x; cd "$$(mktemp -d)" && \
 	curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/krew.{tar.gz,yaml}" && \
 	tar zxvf krew.tar.gz && \
-	"$(KREW)" install --manifest=krew.yaml --archive=krew.tar.gz && \
-	"$(KREW)" update
+	"$$(KREW)" install --manifest=krew.yaml --archive=krew.tar.gz && \
+	"$$(KREW)" update
 	kubectl krew install access-matrix
 	kubectl krew install cssh
 	kubectl krew install pod-logs
@@ -98,22 +98,12 @@ helm: ## 配置 kubernetes helm
 	helm plugin install https://github.com/databus23/helm-diff
 	helm plugin install https://github.com/futuresimple/helm-secrets
 
-.PHONY: zsh
-zsh: ## 配置 Zsh
-	brew install zsh coreutils
-	$(PWD)/zshrc/prezto.sh
-	ln -nsiF $(PWD)/zshrc/zpreztorc $(HOME)/.zpreztorc
-
 .PHONY: iterm
 iterm: ## 配置 iTerm
 	curl -L https://iterm2.com/shell_integration/zsh -o ~/.iterm2_shell_integration.zsh
 	curl -L https://iterm2.com/utilities/imgcat -o /usr/local/bin/imgcat
 	curl -L https://iterm2.com/utilities/imgls -o /usr/local/bin/imgls
 	chmod a+x /usr/local/bin/*
-
-.PHONY: clean
-clean: ## 移除 git 沒有管理的檔案跟目錄
-	git clean -f -d
 
 # Absolutely awesome: http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 .PHONY: help
