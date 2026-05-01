@@ -7,3 +7,6 @@ local opt = vim.opt
 
 -- Custom options
 opt.relativenumber = true
+
+-- Silence deprecation warnings (e.g., from nvim-lspconfig on nightly versions)
+vim.deprecate = function() end
