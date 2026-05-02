@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# NvChad installation script
+# https://nvchad.com/docs/quickstart/install
+
+if [ ! -d "$HOME/.config/nvim" ]; then
+  echo "Installing NvChad v2.5 starter..."
+  git clone https://github.com/NvChad/starter "$HOME/.config/nvim"
+else
+  echo "NvChad (or existing nvim config) already exists at $HOME/.config/nvim. Skipping clone."
+fi

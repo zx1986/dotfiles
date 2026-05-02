@@ -32,6 +32,10 @@ init: ## Auto-detect environment and initialize dotfiles via chezmoi
 		echo "Unsupported OS: $$(uname -s)"; exit 1; \
 	fi
 
+.PHONY: update
+update: ## Sync current directory changes to dotfiles via chezmoi
+	chezmoi apply --source "$(PWD)"
+
 .PHONY: clean
 clean: ## Remove files managed by chezmoi and clean up third-party directories
 	@echo "Looking for chezmoi binary..."
