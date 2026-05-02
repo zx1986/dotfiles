@@ -1,133 +1,106 @@
 # xProfile — Dotfiles
 
-Managed with [chezmoi](https://www.chezmoi.io/). Supports macOS and Ubuntu 22.04, with full offline installation.
+Managed with [chezmoi](https://www.chezmoi.io/). Supports macOS and Ubuntu 22.04, featuring NvChad v2.5 integration and full offline installation support.
 
 ---
 
-## Setup
+## 🚀 Quick Start
 
-### macOS
-
-```sh
-brew install chezmoi
-chezmoi init --apply --source ~/xProfile
-```
-
-### Ubuntu 22.04 — Online
+Initialize your environment with a single command. The installer auto-detects your OS, installs dependencies (Homebrew/chezmoi), and applies your dotfiles.
 
 ```sh
-# Install chezmoi
-curl -fsLS get.chezmoi.io | sh
-# Apply dotfiles (git and other tools must be available)
-~/bin/chezmoi init --apply --source ~/xProfile
+git clone https://github.com/zx1986/xProfile.git ~/xProfile
+cd ~/xProfile
+make init
 ```
 
-### Ubuntu 22.04 — Offline
+### Common Commands
 
-**On a machine with internet** (Ubuntu 22.04 recommended to match package versions):
+| Command | Description |
+|---|---|
+| `make init`   | **Initialize**: Install dependencies, setup chezmoi, and apply dotfiles. |
+| `make update` | **Update (Main Workflow)**: Sync current directory changes to your system. |
+| `make clean`  | **Cleanup**: Remove chezmoi managed links and third-party tool directories. |
+
+---
+
+## 🛠️ Major Components
+
+- **Neovim**: Powered by [NvChad v2.5](https://nvchad.com/).
+    - **Flash.nvim**: Modern, lightning-fast jump motion.
+    - **EasyAlign**: Powerful text alignment tool.
+    - **LSP**: Configured for Lua, HTML, CSS, Prettier, etc.
+- **Zsh**: Based on the [Prezto](https://github.com/sorin-ionescu/prezto) framework.
+- **Tmux**: User-friendly configuration via [Oh My Tmux](https://github.com/gpakosz/.tmux).
+- **DevOps**: Pre-configured support for Terraform, Ansible, and Kubernetes (krew/helm).
+
+---
+
+## 📁 Project Layout
+
+```text
+xProfile/
+├── Makefile                     # Entry point for init and updates
+├── dot_*                        # Dotfiles managed by chezmoi
+├── dot_zshrc.tmpl               # OS-aware zsh configuration
+├── dot_gitconfig.tmpl           # OS-aware Git configuration
+├── dot_tmux.conf.local          # Oh My Tmux customizations
+├── dot_config/nvim/             # NvChad v2.5 overrides (lua/...)
+├── .chezmoitemplates/           # Shared zsh setup fragments
+├── run_once_before_00_...sh     # Install packages (git, neovim, etc.)
+├── run_once_before_10_...sh     # NvChad starter clone
+├── run_once_before_20_...sh     # Prezto installation
+├── run_once_before_30_...sh     # Oh My Tmux installation
+├── scripts/
+│   └── prepare_offline_bundle.sh # Script to bundle all assets for offline use
+└── docker/ubuntu/               # Verification environment
+```
+
+---
+
+## 📶 Offline Installation (Ubuntu 22.04)
+
+**1. On a machine with internet:**
 
 ```sh
-./scripts/prepare_offline_bundle.sh          # defaults to amd64
-./scripts/prepare_offline_bundle.sh --arch arm64  # for ARM servers / Apple Silicon VMs
+./scripts/prepare_offline_bundle.sh
 ```
 
-**Transfer to the target machine:**
+**2. Transfer to target:**
 
 ```sh
 scp -r offline-packages/ user@host:~/.local/share/offline-packages
 scp -r xProfile/         user@host:~/xProfile
 ```
 
-**On the offline target:**
+**3. On the offline target:**
 
 ```sh
-# chezmoi is inside the offline bundle
-~/.local/share/offline-packages/bin/chezmoi init --apply --source ~/xProfile
+cd ~/xProfile
+make init
 ```
 
 ---
 
-## Project Layout
-
-```
-xProfile/
-├── dot_*                        # Dotfiles managed by chezmoi
-├── dot_zshrc.tmpl               # Main zsh config (OS-aware template)
-├── dot_zpreztorc                # Prezto module config
-├── dot_gitconfig.tmpl           # Git config (OS-aware)
-├── dot_tmux.conf.local          # Oh My Tmux user customization
-├── symlink_dot_tmux.conf        # ~/.tmux.conf → ~/.tmux/.tmux.conf
-├── .chezmoitemplates/
-│   ├── zsh_pre_setup            # OS-specific env vars & paths
-│   └── zsh_post_setup           # Tools, functions, plugin sourcing
-├── dot_config/zsh/parts/        # Bundled zsh plugins (sourced by zshrc)
-│   ├── omz-git.plugin.zsh
-│   ├── omz-kubectl.plugin.zsh
-│   ├── omz-kube-ps1.plugin.zsh
-│   ├── omz-aws.plugin.zsh
-│   ├── omz-terraform.plugin.zsh
-│   ├── mysql-colorize.plugin.zsh
-│   └── solarized-man.plugin.zsh
-├── completions/zsh/_eza         # eza zsh completion (→ Prezto)
-├── run_once_install_packages.sh.tmpl
-├── run_once_install_prezto.sh
-├── run_once_install_oh_my_tmux.sh
-├── scripts/
-│   └── prepare_offline_bundle.sh
-└── docker/ubuntu/               # Offline verification environment
-    ├── Dockerfile
-    ├── docker-compose.yml
-    └── verify.sh
-```
-
----
-
-## Offline Bundle Contents
-
-`prepare_offline_bundle.sh` downloads:
-
-| Asset | Source |
-|---|---|
-| `bin/chezmoi` | github.com/twpayne/chezmoi |
-| `bin/fzf` | github.com/junegunn/fzf |
-| `bin/fd` | github.com/sharkdp/fd |
-| `bin/bat` | github.com/sharkdp/bat |
-| `bin/eza` | github.com/eza-community/eza |
-| `debs/tig` | Ubuntu apt |
-| `debs/*.deb` | Core: zsh, tmux, git, curl, build-essential |
-| `asdf/*.tar.gz` | github.com/asdf-vm/asdf |
-| `prezto.tar.gz` | github.com/sorin-ionescu/prezto (recursive) |
-| `prezto-contrib.tar.gz` | github.com/belak/prezto-contrib |
-| `oh-my-tmux.tar.gz` | github.com/gpakosz/.tmux |
-| `tpm.tar.gz` | github.com/tmux-plugins/tpm |
-
----
-
-## Docker Verification
+## 🧪 Docker Verification
 
 ```sh
 cd docker/ubuntu
-
-# Build image (downloads all apt deps during build)
 docker compose build
-
-# Start container
 docker compose up -d
 
-# Run full verification (online mode)
+# Online verification
 docker exec dotfiles_ubuntu_verify bash ~/xProfile/docker/ubuntu/verify.sh
 
-# Run full verification (offline mode — needs offline-packages/ bundle mounted)
+# Offline verification (requires bundle mounted)
 docker exec dotfiles_ubuntu_verify bash ~/xProfile/docker/ubuntu/verify.sh --offline
-
-# Interactive shell
-docker exec -it dotfiles_ubuntu_verify zsh
 ```
 
 ---
 
 ## Reference
 
-- https://www.chezmoi.io/
-- https://github.com/gpakosz/.tmux
-- https://github.com/sorin-ionescu/prezto
+- [chezmoi](https://www.chezmoi.io/)
+- [NvChad](https://nvchad.com/)
+- [Prezto](https://github.com/sorin-ionescu/prezto)
+- [Oh My Tmux](https://github.com/gpakosz/.tmux)
