@@ -8,5 +8,11 @@ local opt = vim.opt
 -- Custom options
 opt.relativenumber = true
 
--- Silence deprecation warnings (e.g., from nvim-lspconfig on nightly versions)
-vim.deprecate = function() end
+-- Targeted suppression of noisy deprecation warnings
+local original_notify = vim.notify
+vim.notify = function(msg, level, opts)
+  if msg:find "The `require('lspconfig')` \"framework\" is deprecated" then
+    return
+  end
+  original_notify(msg, level, opts)
+end
