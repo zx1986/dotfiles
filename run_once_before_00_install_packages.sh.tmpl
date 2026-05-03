@@ -14,7 +14,7 @@ if ! command -v brew >/dev/null; then
 fi
 
 echo "Installing Brew Packages..."
-brew install git tig bit-git curl asdf zsh coreutils gemini-cli neovim ripgrep fd gcc tree-sitter-cli
+brew install git tig bit-git curl asdf zsh coreutils gemini-cli neovim ripgrep fd gcc
 
 # Install gemini-cli superpowers extension
 if command -v gemini >/dev/null; then
@@ -28,15 +28,6 @@ if [ -f "$(brew --prefix asdf)/libexec/asdf.sh" ]; then
 elif [ -f "$(brew --prefix asdf)/asdf.sh" ]; then
     . "$(brew --prefix asdf)/asdf.sh"
 fi
-export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
-
-asdf plugin add golang || true
-asdf plugin add terraform || true
-
-if [ -f "$HOME/.tool-versions" ]; then
-    echo "Installing ASDF versions..."
-    asdf install
-fi
 
 {{ else -}}
 # === Linux (Ubuntu 22.04): Online Install ===
@@ -44,7 +35,8 @@ fi
 if command -v apt-get >/dev/null; then
   echo "Installing core packages via apt..."
   sudo apt-get update -qq
-  sudo apt-get install -y zsh tmux git curl wget unzip build-essential fd-find bat eza
+  # Added neovim and ripgrep for parity with macOS
+  sudo apt-get install -y zsh tmux git curl wget unzip build-essential fd-find bat eza neovim ripgrep
 fi
 
 # --- Install asdf ---
@@ -53,9 +45,31 @@ if ! command -v asdf >/dev/null; then
     echo "Installing asdf from GitHub..."
     ASDF_VERSION=$(curl -fsS https://api.github.com/repos/asdf-vm/asdf/releases/latest \
       | grep '"tag_name"' | cut -d'"' -f4)
+    # Fallback if API rate limit is hit
+    if [ -z "$ASDF_VERSION" ]; then
+      ASDF_VERSION="v0.14.0" 
+    fi
     git clone --depth=1 --branch "${ASDF_VERSION}" \
       https://github.com/asdf-vm/asdf.git "$HOME/.asdf"
   fi
 fi
 
+# ASDF Setup (Linux)
+if [ -f "$HOME/.asdf/asdf.sh" ]; then
+    . "$HOME/.asdf/asdf.sh"
+fi
+
 {{ end -}}
+
+# === Common ASDF Installation ===
+export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
+
+if command -v asdf >/dev/null; then
+  asdf plugin add golang || true
+  asdf plugin add terraform || true
+
+  if [ -f "$HOME/.tool-versions" ]; then
+      echo "Installing ASDF versions..."
+      asdf install
+  fi
+fi
