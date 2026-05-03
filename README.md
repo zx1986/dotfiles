@@ -51,20 +51,18 @@ xProfile/
 ├── run_once_before_10_...sh     # NvChad starter clone
 ├── run_once_before_20_...sh     # Prezto installation
 ├── run_once_before_30_...sh     # Oh My Tmux installation
-└── docker/ubuntu/               # Verification environment
-```
+└── tests/                       # Lightweight OS simulation tests
 
 ---
 
-## 🧪 Docker Verification
+## 🧪 Testing
+
+The project uses a lightweight simulation framework to verify template rendering across different OSes without needing Docker. This is significantly faster and allows testing macOS logic on macOS and Linux logic on Linux (or any OS supported by chezmoi).
 
 ```sh
-cd docker/ubuntu
-docker compose build
-docker compose up -d
-
-# Online verification
-docker exec dotfiles_ubuntu_verify bash ~/xProfile/docker/ubuntu/verify.sh
+make test         # Run all tests (Linux + macOS)
+make test-linux   # Test Linux rendering simulation
+make test-macos   # Test macOS rendering simulation
 ```
 
 ---
