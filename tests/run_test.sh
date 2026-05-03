@@ -13,14 +13,18 @@ trap 'rm -rf "$TMP_HOME"' EXIT
 echo ">>> Simulating $OS_TYPE environment in $TMP_HOME..."
 
 # Identify templates and regular files
-FILES=$(find . -maxdepth 1 -name "dot_*" -o -name "run_once_*" | sed 's|./||')
-
-for f in $FILES; do
-  TARGET_NAME=$(echo "$f" | sed 's/^dot_//' | sed 's/\.tmpl$//')
+find . -maxdepth 1 \( -name "dot_*" -o -name "run_once_*" \) -print0 | while IFS= read -r -d '' f; do
+  f="${f#./}"
+  if [[ "$f" == dot_* ]]; then
+    TARGET_NAME=".${f#dot_}"
+  else
+    TARGET_NAME="$f"
+  fi
+  TARGET_NAME="${TARGET_NAME%.tmpl}"
   
   if [[ "$f" == *.tmpl ]]; then
-    # Render template with mocked OS
-    chezmoi execute-template --override-data "{\"chezmoi\": {\"os\": \"$OS_TYPE\"}}" < "$f" > "$TMP_HOME/$TARGET_NAME"
+    # Render template with mocked OS and homeDir
+    chezmoi execute-template --init --source=. --os="$OS_TYPE" --override-data "{\"chezmoi\": {\"os\": \"$OS_TYPE\", \"homeDir\": \"$TMP_HOME\"}}" "$f" > "$TMP_HOME/$TARGET_NAME"
   else
     # Copy regular file
     cp -r "$f" "$TMP_HOME/$TARGET_NAME"
