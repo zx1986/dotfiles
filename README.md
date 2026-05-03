@@ -1,6 +1,6 @@
 # xProfile — Dotfiles
 
-Managed with [chezmoi](https://www.chezmoi.io/). Supports macOS and Ubuntu 22.04, featuring NvChad v2.5 integration and full offline installation support.
+Managed with [chezmoi](https://www.chezmoi.io/). Supports macOS and Ubuntu 22.04, featuring NvChad v2.5 integration.
 
 ---
 
@@ -51,33 +51,7 @@ xProfile/
 ├── run_once_before_10_...sh     # NvChad starter clone
 ├── run_once_before_20_...sh     # Prezto installation
 ├── run_once_before_30_...sh     # Oh My Tmux installation
-├── scripts/
-│   └── prepare_offline_bundle.sh # Script to bundle all assets for offline use
 └── docker/ubuntu/               # Verification environment
-```
-
----
-
-## 📶 Offline Installation (Ubuntu 22.04)
-
-**1. On a machine with internet:**
-
-```sh
-./scripts/prepare_offline_bundle.sh
-```
-
-**2. Transfer to target:**
-
-```sh
-scp -r offline-packages/ user@host:~/.local/share/offline-packages
-scp -r xProfile/         user@host:~/xProfile
-```
-
-**3. On the offline target:**
-
-```sh
-cd ~/xProfile
-make init
 ```
 
 ---
@@ -91,9 +65,6 @@ docker compose up -d
 
 # Online verification
 docker exec dotfiles_ubuntu_verify bash ~/xProfile/docker/ubuntu/verify.sh
-
-# Offline verification (requires bundle mounted)
-docker exec dotfiles_ubuntu_verify bash ~/xProfile/docker/ubuntu/verify.sh --offline
 ```
 
 ---
