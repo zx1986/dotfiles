@@ -1,13 +1,11 @@
 services:
-  foobar:
+  ubuntu_verify:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: xprofile_test
-    platform: linux/amd64
-    hostname: foobar
+    container_name: dotfiles_ubuntu_verify
+    # Keep running so we can exec into it
+    command: tail -f /dev/null
     volumes:
-      - ../../:/home/testuser/xProfile:rw
-      - ../../offline-packages:/home/testuser/.local/share/offline-packages:ro
-    tty: true
-    stdin_open: true
+      # Mount the xProfile repo to test apply
+      - ../../:/home/testuser/xProfile:ro

@@ -1,35 +1,16 @@
 #!/bin/bash
 # verify.sh — Run inside Docker to test chezmoi apply + verify result
 # Usage:
-#   Online mode:  docker exec dotfiles_ubuntu_verify bash ~/xProfile/docker/ubuntu/verify.sh
-#   Offline mode: docker exec dotfiles_ubuntu_verify bash ~/xProfile/docker/ubuntu/verify.sh --offline
+#   docker exec dotfiles_ubuntu_verify bash ~/xProfile/docker/ubuntu/verify.sh
 
 set -e
 
-OFFLINE_MODE=false
-[[ "${1:-}" == "--offline" ]] && OFFLINE_MODE=true
-
 echo "============================================"
 echo " xProfile Ubuntu Verification"
-echo " Mode: $( $OFFLINE_MODE && echo OFFLINE || echo ONLINE )"
 echo "============================================"
 echo ""
 
 SOURCE_DIR="$HOME/xProfile"
-OFFLINE_BUNDLE="$HOME/.local/share/offline-packages"
-
-# If offline mode, disable network (requires running as root or with CAP_NET_ADMIN)
-# In practice we just skip any step that would need internet
-if $OFFLINE_MODE; then
-  echo "[offline] Verifying bundle exists..."
-  if [ ! -d "$OFFLINE_BUNDLE" ]; then
-    echo "ERROR: Offline bundle not found at $OFFLINE_BUNDLE"
-    echo "Run ./scripts/prepare_offline_bundle.sh first, then mount at that path."
-    exit 1
-  fi
-  ls -lh "$OFFLINE_BUNDLE"
-  echo ""
-fi
 
 # Run chezmoi apply
 echo ">>> Running chezmoi init --apply..."
