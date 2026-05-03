@@ -109,6 +109,17 @@ iterm: ## 配置 iTerm
 	curl -L https://iterm2.com/utilities/imgls -o /usr/local/bin/imgls
 	chmod a+x /usr/local/bin/*
 
+.PHONY: test
+test: test-macos test-linux ## Run all simulation tests
+
+.PHONY: test-linux
+test-linux: ## Test Linux template rendering
+	@bash ./tests/run_test.sh linux
+
+.PHONY: test-macos
+test-macos: ## Test macOS template rendering
+	@bash ./tests/run_test.sh darwin
+
 # Absolutely awesome: http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 .PHONY: help
 help:
