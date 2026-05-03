@@ -35,12 +35,12 @@ fi
 if command -v apt-get >/dev/null; then
   echo "Installing core packages via apt..."
   sudo apt-get update -qq
-  # Added neovim and ripgrep for parity with macOS
-  sudo apt-get install -y zsh tmux git curl wget unzip build-essential fd-find bat eza neovim ripgrep
+  # Added packages for parity with macOS and to pass verification
+  sudo apt-get install -y zsh tmux git curl wget unzip build-essential fd-find bat fzf tig ripgrep
 fi
 
 # --- Install asdf ---
-if ! command -v asdf >/dev/null; then
+if ! command -v asdf >/dev/null && [ ! -d "$HOME/.asdf" ]; then
   if command -v git >/dev/null; then
     echo "Installing asdf from GitHub..."
     ASDF_VERSION=$(curl -fsS https://api.github.com/repos/asdf-vm/asdf/releases/latest \
