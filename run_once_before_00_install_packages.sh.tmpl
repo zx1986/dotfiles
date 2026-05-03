@@ -39,54 +39,17 @@ if [ -f "$HOME/.tool-versions" ]; then
 fi
 
 {{ else -}}
-# === Linux (Ubuntu 22.04): Offline-capable Install ===
-# Packages are pre-bundled in $OFFLINE_DIR by prepare_offline_bundle.sh,
-# OR installed via apt if internet is available.
+# === Linux (Ubuntu 22.04): Online Install ===
 
-OFFLINE_DIR="$HOME/.local/share/offline-packages"
-
-# --- Install core .deb packages (offline bundle) ---
-if [ -d "$OFFLINE_DIR/debs" ] && ls "$OFFLINE_DIR/debs/"*.deb >/dev/null 2>&1; then
-  echo "Installing core .deb packages from offline bundle..."
-  sudo dpkg -i "$OFFLINE_DIR/debs/"*.deb 2>/dev/null || true
-  sudo apt-get install -f -y 2>/dev/null || true
-elif command -v apt-get >/dev/null; then
+if command -v apt-get >/dev/null; then
   echo "Installing core packages via apt..."
   sudo apt-get update -qq
-  sudo apt-get install -y zsh tmux git curl wget unzip build-essential
+  sudo apt-get install -y zsh tmux git curl wget unzip build-essential fd-find bat eza
 fi
-
-# --- Install standalone binaries from offline bundle ---
-for bin in chezmoi fd fzf eza bat tig; do
-  if ! command -v "$bin" >/dev/null && [ -f "$OFFLINE_DIR/bin/$bin" ]; then
-    echo "Installing $bin from offline bundle..."
-    sudo install -m 755 "$OFFLINE_DIR/bin/$bin" /usr/local/bin/"$bin"
-  fi
-done
 
 # --- Install asdf ---
 if ! command -v asdf >/dev/null; then
-  # Try offline bundle first
-  ASDF_TGZ=$(ls "$OFFLINE_DIR/asdf/"*.tar.gz 2>/dev/null | head -1 || true)
-  if [ -n "$ASDF_TGZ" ]; then
-    echo "Installing asdf from offline bundle..."
-    ASDF_TMP=$(mktemp -d)
-    tar xzf "$ASDF_TGZ" -C "$ASDF_TMP"
-    if [ -f "$ASDF_TMP/asdf" ]; then
-      # Binary release (Go version) extracts a single binary
-      mkdir -p "$HOME/.local/bin"
-      mv "$ASDF_TMP/asdf" "$HOME/.local/bin/asdf"
-      chmod 755 "$HOME/.local/bin/asdf"
-    else
-      # Source release extracts to a directory (e.g. asdf-0.18.0)
-      ASDF_DIR=$(find "$ASDF_TMP" -mindepth 1 -maxdepth 1 -type d | head -1)
-      if [ -n "$ASDF_DIR" ] && [ -f "$ASDF_DIR/bin/asdf" ]; then
-        rm -rf "$HOME/.asdf"
-        mv "$ASDF_DIR" "$HOME/.asdf"
-      fi
-    fi
-    rm -rf "$ASDF_TMP"
-  elif command -v git >/dev/null; then
+  if command -v git >/dev/null; then
     echo "Installing asdf from GitHub..."
     ASDF_VERSION=$(curl -fsS https://api.github.com/repos/asdf-vm/asdf/releases/latest \
       | grep '"tag_name"' | cut -d'"' -f4)
