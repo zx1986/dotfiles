@@ -24,7 +24,7 @@ find . -maxdepth 1 \( -name "dot_*" -o -name "run_once_*" \) -print0 | while IFS
   
   if [[ "$f" == *.tmpl ]]; then
     # Render template with mocked OS and homeDir
-    chezmoi execute-template --init --source=. --os="$OS_TYPE" --override-data "{\"chezmoi\": {\"os\": \"$OS_TYPE\", \"homeDir\": \"$TMP_HOME\"}}" "$f" > "$TMP_HOME/$TARGET_NAME"
+    chezmoi execute-template -f --init --source=. --override-data "{\"chezmoi\": {\"os\": \"$OS_TYPE\", \"homeDir\": \"$TMP_HOME\"}}" "$f" > "$TMP_HOME/$TARGET_NAME"
   else
     # Copy regular file
     cp -r "$f" "$TMP_HOME/$TARGET_NAME"
