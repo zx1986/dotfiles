@@ -120,6 +120,14 @@ test-linux: ## Test Linux template rendering
 test-macos: ## Test macOS template rendering
 	@bash ./tests/run_test.sh darwin
 
+.PHONY: bundle-offline
+bundle-offline: ## Generate an offline installation bundle for Ubuntu
+	@echo "Bundling offline support..."
+
+.PHONY: clean-offline
+clean-offline: ## Remove generated offline bundles
+	rm -rf dist/
+
 # Absolutely awesome: http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 .PHONY: help
 help:
