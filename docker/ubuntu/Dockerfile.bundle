@@ -1,0 +1,36 @@
+FROM ubuntu:22.04
+
+# Avoid prompts
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install basic tools needed for bundling
+RUN apt-get update && apt-get install -y \
+    curl git zsh tmux unzip build-essential sudo
+
+# 1. Download system packages (.debs) for offline install
+RUN mkdir -p /offline/debs && \
+    apt-get update && \
+    apt-get install -d -y \
+    zsh tmux git curl wget unzip build-essential fd-find bat fzf tig ripgrep
+
+# 2. Setup chezmoi
+RUN sh -c "$(curl -fsLS https://get.chezmoi.io)" -- -b /usr/local/bin
+
+# 3. Clone xProfile and apply
+RUN useradd -m -s /usr/bin/zsh user && \
+    echo "user ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+USER user
+WORKDIR /home/user
+COPY --chown=user:user . ./xProfile
+RUN /usr/local/bin/chezmoi init --apply --source ./xProfile
+
+# 4. Warm up Neovim (Lazy & Mason)
+RUN nvim --headless "+Lazy! sync" +qa && \
+    nvim --headless "+MasonInstall lua-language-server" +qa
+
+# 5. Create final bundle structure
+USER root
+RUN mkdir -p /dist && \
+    cp /usr/local/bin/chezmoi /offline/chezmoi && \
+    cp -r /var/cache/apt/archives/*.deb /offline/debs/ && \
+    tar -czf /offline/home_snapshot.tar.gz -C /home/user .
