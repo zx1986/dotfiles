@@ -3,14 +3,28 @@ set -e
 
 echo ">>> Starting Offline Installation..."
 
+SUDO=""
+if [ "$(id -u)" -ne 0 ]; then
+    if command -v sudo >/dev/null 2>&1; then
+        SUDO="sudo"
+    else
+        echo "Error: This script must be run as root or with sudo available."
+        exit 1
+    fi
+fi
+
 # 1. Install debs
 echo ">>> Installing system packages (.debs)..."
-sudo dpkg -i debs/*.deb
+if ls debs/*.deb >/dev/null 2>&1; then
+    ${SUDO} dpkg -i debs/*.deb
+else
+    echo "No .deb files found in debs/ directory."
+fi
 
 # 2. Install Neovim
 echo ">>> Installing Neovim..."
 if [ -f nvim-linux64.tar.gz ]; then
-    sudo tar -C /usr/local -xzf nvim-linux64.tar.gz --strip-components=1
+    ${SUDO} tar -C /usr/local -xzf nvim-linux64.tar.gz --strip-components=1
 else
     echo "Warning: nvim-linux64.tar.gz not found, skipping Neovim extraction."
 fi
@@ -26,10 +40,8 @@ cp chezmoi "$HOME/bin/"
 export PATH="$HOME/bin:$PATH"
 
 # 5. Run chezmoi apply in offline mode
-# We will use the --override-data to set is_offline=true
 echo ">>> Applying dotfiles..."
-# Ensure we are in the home directory or wherever chezmoi expects to find its source if it was extracted there
-# Usually, the home snapshot includes .local/share/chezmoi
+chezmoi init --source "$HOME/xProfile"
 chezmoi apply --override-data '{"is_offline": true}'
 
 echo ">>> Offline Installation Complete!"

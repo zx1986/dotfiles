@@ -9,7 +9,8 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # 1. Download system packages (.debs) for offline install
-RUN mkdir -p /offline/debs && \
+RUN rm -f /etc/apt/apt.conf.d/docker-clean && \
+    mkdir -p /offline/debs && \
     apt-get update && \
     apt-get install -d -y \
     zsh tmux git curl wget unzip build-essential fd-find bat fzf tig ripgrep \
