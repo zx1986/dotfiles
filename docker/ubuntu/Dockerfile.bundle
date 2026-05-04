@@ -5,16 +5,23 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # Install basic tools needed for bundling
 RUN apt-get update && apt-get install -y \
-    curl git zsh tmux unzip build-essential sudo
+    curl git zsh tmux unzip build-essential sudo \
+    && rm -rf /var/lib/apt/lists/*
 
 # 1. Download system packages (.debs) for offline install
 RUN mkdir -p /offline/debs && \
     apt-get update && \
     apt-get install -d -y \
-    zsh tmux git curl wget unzip build-essential fd-find bat fzf tig ripgrep
+    zsh tmux git curl wget unzip build-essential fd-find bat fzf tig ripgrep \
+    && rm -rf /var/lib/apt/lists/*
 
-# 2. Setup chezmoi
-RUN sh -c "$(curl -fsLS https://get.chezmoi.io)" -- -b /usr/local/bin
+# 2. Setup chezmoi and Neovim
+RUN sh -c "$(curl -fsLS https://get.chezmoi.io)" -- -b /usr/local/bin && \
+    curl -LO https://github.com/neovim/neovim/releases/download/v0.10.0/nvim-linux64.tar.gz && \
+    tar -C /usr/local -xzf nvim-linux64.tar.gz --strip-components=1 && \
+    mkdir -p /offline && \
+    cp nvim-linux64.tar.gz /offline/nvim-linux64.tar.gz && \
+    rm nvim-linux64.tar.gz
 
 # 3. Clone xProfile and apply
 RUN useradd -m -s /usr/bin/zsh user && \

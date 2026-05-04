@@ -124,7 +124,7 @@ test-macos: ## Test macOS template rendering
 bundle-offline: ## Generate an offline installation bundle for Ubuntu
 	mkdir -p dist/
 	docker build -t xprofile-bundler -f docker/ubuntu/Dockerfile.bundle .
-	docker run --rm -v $(PWD)/dist:/output xprofile-bundler sh -c "cp -r /offline/* /output/ && tar -czf /output/xProfile-offline.tar.gz -C /offline ."
+	docker run --rm -v "$$(pwd)/dist:/output" xprofile-bundler sh -c "tar -czf /output/xProfile-offline.tar.gz -C /offline ."
 
 .PHONY: clean-offline
 clean-offline: ## Remove generated offline bundles
