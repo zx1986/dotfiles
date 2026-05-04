@@ -2,6 +2,7 @@
 set -e
 
 {{ if eq .chezmoi.os "darwin" -}}
+{{- if not .is_offline }}
 # === macOS: Install via Homebrew ===
 if ! command -v brew >/dev/null; then
   echo "Installing Homebrew..."
@@ -28,6 +29,7 @@ if [ -f "$(brew --prefix asdf)/libexec/asdf.sh" ]; then
 elif [ -f "$(brew --prefix asdf)/asdf.sh" ]; then
     . "$(brew --prefix asdf)/asdf.sh"
 fi
+{{- end }}
 
 {{ else -}}
 # === Linux (Ubuntu 22.04): Online Install ===
