@@ -8,3 +8,4 @@ offline-packages/
 .gitignore
 .env
 .env.example
+tests
