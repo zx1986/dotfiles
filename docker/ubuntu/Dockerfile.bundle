@@ -37,6 +37,8 @@ RUN nvim --headless "+Lazy! sync" +qa && \
 
 # 5. Create final bundle structure
 USER root
+COPY docker/ubuntu/install_offline.sh /offline/install.sh
+RUN chmod +x /offline/install.sh
 RUN mkdir -p /dist && \
     cp /usr/local/bin/chezmoi /offline/chezmoi && \
     cp -r /var/cache/apt/archives/*.deb /offline/debs/ && \
