@@ -4,7 +4,7 @@
 # https://nvchad.com/docs/quickstart/install
 
 if [ ! -d "$HOME/.config/nvim" ]; then
-  {{- if not .is_offline }}
+  {{- if not (index . "is_offline") }}
   echo "Installing NvChad v2.5 starter..."
   git clone https://github.com/NvChad/starter "$HOME/.config/nvim"
   {{- end }}

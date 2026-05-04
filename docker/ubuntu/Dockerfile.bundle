@@ -30,7 +30,7 @@ RUN useradd -m -s /usr/bin/zsh user && \
 USER user
 WORKDIR /home/user
 COPY --chown=user:user . ./xProfile
-RUN /usr/local/bin/chezmoi init --apply --source ./xProfile
+RUN /usr/local/bin/chezmoi init --apply --source ./xProfile --data is_offline=false
 
 # 4. Warm up Neovim (Lazy & Mason)
 RUN nvim --headless "+Lazy! sync" +qa && \

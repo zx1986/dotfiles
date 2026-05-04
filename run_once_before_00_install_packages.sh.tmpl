@@ -2,7 +2,7 @@
 set -e
 
 {{ if eq .chezmoi.os "darwin" -}}
-{{- if not .is_offline }}
+{{- if not (index . "is_offline") }}
 # === macOS: Install via Homebrew ===
 if ! command -v brew >/dev/null; then
   echo "Installing Homebrew..."
@@ -34,7 +34,7 @@ fi
 {{ else -}}
 # === Linux (Ubuntu 22.04): Online Install ===
 
-{{- if not .is_offline }}
+{{- if not (index . "is_offline") }}
 if command -v apt-get >/dev/null; then
   echo "Installing core packages via apt..."
   sudo apt-get update -qq
@@ -68,7 +68,7 @@ echo "Offline mode detected. Skipping internet-dependent installations (asdf, et
 {{ end -}}
 
 # === Common ASDF Installation ===
-{{- if not .is_offline }}
+{{- if not (index . "is_offline") }}
 export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
 
 if command -v asdf >/dev/null; then
