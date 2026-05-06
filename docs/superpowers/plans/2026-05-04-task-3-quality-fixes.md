@@ -104,7 +104,7 @@ Run `bash -n docker/ubuntu/install_offline.sh`
 
 ### Task 3: Commit Changes
 
-- [ ] **Step 1: Commit with specific message**
+- [x] **Step 1: Commit with specific message**
 
 Commit the fixes with message: "fix: improve installer robustness and portability"
 
