@@ -1,6 +1,6 @@
 # Ubuntu Offline Support Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Create a Docker-based bundling system and an offline installation script to support Ubuntu 22.04 environments without internet access.
 
@@ -16,14 +16,14 @@
 - Modify: `.gitignore`
 - Modify: `Makefile`
 
-- [ ] **Step 1: Update .gitignore**
+- [x] **Step 1: Update .gitignore**
 Exclude the `dist/` directory and any generated tarballs.
 ```text
 dist/
 *.tar.gz
 ```
 
-- [ ] **Step 2: Add placeholder targets to Makefile**
+- [x] **Step 2: Add placeholder targets to Makefile**
 Add `bundle-offline` and `clean-offline` to the `Makefile`.
 ```makefile
 bundle-offline: ## Generate an offline installation bundle for Ubuntu
@@ -33,7 +33,7 @@ clean-offline: ## Remove generated offline bundles
 	rm -rf dist/
 ```
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 ```bash
 git add .gitignore Makefile
 git commit -m "chore: prepare workspace for offline support"
@@ -46,7 +46,7 @@ git commit -m "chore: prepare workspace for offline support"
 **Files:**
 - Create: `docker/ubuntu/Dockerfile.bundle`
 
-- [ ] **Step 1: Create the Dockerfile**
+- [x] **Step 1: Create the Dockerfile**
 This Dockerfile will capture all dependencies.
 ```dockerfile
 FROM ubuntu:22.04
@@ -87,7 +87,7 @@ RUN mkdir -p /dist && \
     tar -czf /offline/home_snapshot.tar.gz -C /home/user .
 ```
 
-- [ ] **Step 2: Update Makefile to run Docker build**
+- [x] **Step 2: Update Makefile to run Docker build**
 ```makefile
 bundle-offline:
 	mkdir -p dist/
@@ -95,7 +95,7 @@ bundle-offline:
 	docker run --rm -v $(PWD)/dist:/output xprofile-bundler sh -c "cp -r /offline/* /output/ && tar -czf /output/xProfile-offline.tar.gz -C /offline ."
 ```
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 ```bash
 git add docker/ubuntu/Dockerfile.bundle Makefile
 git commit -m "feat: add docker-based bundler for offline support"
@@ -108,7 +108,7 @@ git commit -m "feat: add docker-based bundler for offline support"
 **Files:**
 - Create: `docker/ubuntu/install_offline.sh`
 
-- [ ] **Step 1: Create the installer script**
+- [x] **Step 1: Create the installer script**
 This script will be packaged into the bundle.
 ```bash
 #!/bin/bash
@@ -136,14 +136,14 @@ chezmoi apply --override-data '{"is_offline": true}'
 echo ">>> Offline Installation Complete!"
 ```
 
-- [ ] **Step 2: Update Dockerfile to include installer**
+- [x] **Step 2: Update Dockerfile to include installer**
 Modify `docker/ubuntu/Dockerfile.bundle` to copy the installer into `/offline`.
 ```dockerfile
 COPY docker/ubuntu/install_offline.sh /offline/install.sh
 RUN chmod +x /offline/install.sh
 ```
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 ```bash
 git add docker/ubuntu/install_offline.sh docker/ubuntu/Dockerfile.bundle
 git commit -m "feat: add offline installation script"
@@ -156,7 +156,7 @@ git commit -m "feat: add offline installation script"
 **Files:**
 - Modify: `run_once_before_00_install_packages.sh.tmpl`
 
-- [ ] **Step 1: Respect is_offline flag**
+- [x] **Step 1: Respect is_offline flag**
 Modify the install script template to skip `asdf` and other internet-dependent steps when `is_offline` is true.
 ```bash
 {{- if not .is_offline }}
@@ -166,7 +166,7 @@ echo "Offline mode detected. Skipping internet-dependent installations (asdf, et
 {{- end }}
 ```
 
-- [ ] **Step 2: Commit**
+- [x] **Step 2: Commit**
 ```bash
 git add run_once_before_00_install_packages.sh.tmpl
 git commit -m "feat: update templates to respect offline mode"
@@ -176,11 +176,11 @@ git commit -m "feat: update templates to respect offline mode"
 
 ### Task 5: Final Verification
 
-- [ ] **Step 1: Run bundling**
+- [x] **Step 1: Run bundling**
 Run: `make bundle-offline`
 Expected: `dist/xProfile-offline.tar.gz` exists and is ~200MB-500MB.
 
-- [ ] **Step 2: Simulate offline install**
+- [x] **Step 2: Simulate offline install**
 Create a test container with NO network access and run the installer.
 ```bash
 docker run --rm -it --network none -v $(PWD)/dist:/bundle ubuntu:22.04 bash
@@ -188,11 +188,11 @@ docker run --rm -it --network none -v $(PWD)/dist:/bundle ubuntu:22.04 bash
 # cd /bundle && ./install.sh
 ```
 
-- [ ] **Step 3: Final cleanup**
+- [x] **Step 3: Final cleanup**
 Run: `make clean-offline`
 Verify `dist/` is gone.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 ```bash
 git commit -m "test: verify offline bundling and installation"
 ```

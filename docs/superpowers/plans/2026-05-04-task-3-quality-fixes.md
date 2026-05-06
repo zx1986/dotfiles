@@ -19,7 +19,7 @@
 **Files:**
 - Modify: `docker/ubuntu/Dockerfile.bundle`
 
-- [ ] **Step 1: Disable docker-clean to keep debs**
+- [x] **Step 1: Disable docker-clean to keep debs**
 
 In `docker/ubuntu/Dockerfile.bundle`, add `RUN rm -f /etc/apt/apt.conf.d/docker-clean` before the `apt-get update` call that downloads debs.
 
@@ -33,7 +33,7 @@ RUN rm -f /etc/apt/apt.conf.d/docker-clean && \
     && rm -rf /var/lib/apt/lists/*
 ```
 
-- [ ] **Step 2: Verify Dockerfile syntax**
+- [x] **Step 2: Verify Dockerfile syntax**
 Run `docker build -f docker/ubuntu/Dockerfile.bundle .` (optional, if docker is available) or just check syntax.
 
 ### Task 2: Improve Installer Robustness (Sudo, Glob, Portability)
@@ -41,7 +41,7 @@ Run `docker build -f docker/ubuntu/Dockerfile.bundle .` (optional, if docker is 
 **Files:**
 - Modify: `docker/ubuntu/install_offline.sh`
 
-- [ ] **Step 1: Implement SUDO variable detection**
+- [x] **Step 1: Implement SUDO variable detection**
 
 Define a `SUDO` variable that checks if `sudo` is available and if the user is not root.
 
@@ -57,7 +57,7 @@ if [ "$(id -u)" -ne 0 ]; then
 fi
 ```
 
-- [ ] **Step 2: Add Glob Guard for dpkg**
+- [x] **Step 2: Add Glob Guard for dpkg**
 
 Wrap `dpkg -i debs/*.deb` in an `if` check to see if any `.deb` files exist.
 
@@ -71,7 +71,7 @@ else
 fi
 ```
 
-- [ ] **Step 3: Update Neovim installation to use ${SUDO}**
+- [x] **Step 3: Update Neovim installation to use ${SUDO}**
 
 ```bash
 # 2. Install Neovim
@@ -82,7 +82,7 @@ else
 ...
 ```
 
-- [ ] **Step 4: Improve Chezmoi path portability**
+- [x] **Step 4: Improve Chezmoi path portability**
 
 Ensure that the snapshot extraction and `chezmoi init` handle the local user's home directory correctly. Specifically, use `chezmoi init --source "$HOME/xProfile"`.
 
@@ -99,7 +99,7 @@ chezmoi init --source "$HOME/xProfile"
 chezmoi apply --override-data '{"is_offline": true}'
 ```
 
-- [ ] **Step 5: Verify install_offline.sh syntax**
+- [x] **Step 5: Verify install_offline.sh syntax**
 Run `bash -n docker/ubuntu/install_offline.sh`
 
 ### Task 3: Commit Changes

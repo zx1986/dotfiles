@@ -41,7 +41,6 @@ export PATH="$HOME/bin:$PATH"
 
 # 5. Run chezmoi apply in offline mode
 echo ">>> Applying dotfiles..."
-chezmoi init --source "$HOME/xProfile"
-chezmoi apply --override-data '{"is_offline": true}'
+chezmoi apply --source "$HOME/xProfile" --override-data '{"is_offline": true}'
 
 echo ">>> Offline Installation Complete!"

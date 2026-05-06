@@ -1,20 +1,24 @@
-FROM ubuntu:22.04
-
-# Avoid prompts
+# Stage 1: Download debs in a clean environment
+FROM ubuntu:22.04 AS downloader
 ENV DEBIAN_FRONTEND=noninteractive
-
-# Install basic tools needed for bundling
-RUN apt-get update && apt-get install -y \
-    curl git zsh tmux unzip build-essential sudo \
-    && rm -rf /var/lib/apt/lists/*
-
-# 1. Download system packages (.debs) for offline install
 RUN rm -f /etc/apt/apt.conf.d/docker-clean && \
     mkdir -p /offline/debs && \
     apt-get update && \
     apt-get install -d -y \
-    zsh tmux git curl wget unzip build-essential fd-find bat fzf tig ripgrep \
+    zsh tmux git curl wget unzip build-essential fd-find bat fzf tig ripgrep
+RUN cp /var/cache/apt/archives/*.deb /offline/debs/
+
+# Stage 2: Build the actual bundle environment
+FROM ubuntu:22.04
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install basic tools needed for bundling (these don't need to be in the offline bundle debs)
+RUN apt-get update && apt-get install -y \
+    curl git zsh tmux unzip build-essential sudo \
     && rm -rf /var/lib/apt/lists/*
+
+# Copy pre-downloaded debs from Stage 1
+COPY --from=downloader /offline/debs /offline/debs
 
 # 2. Setup chezmoi and Neovim
 RUN sh -c "$(curl -fsLS https://get.chezmoi.io)" -- -b /usr/local/bin && \
@@ -30,7 +34,7 @@ RUN useradd -m -s /usr/bin/zsh user && \
 USER user
 WORKDIR /home/user
 COPY --chown=user:user . ./xProfile
-RUN /usr/local/bin/chezmoi init --apply --source ./xProfile --data is_offline=false
+RUN /usr/local/bin/chezmoi apply --source ./xProfile --force --override-data '{"is_offline": false}'
 
 # 4. Warm up Neovim (Lazy & Mason)
 RUN nvim --headless "+Lazy! sync" +qa && \
@@ -42,5 +46,4 @@ COPY docker/ubuntu/install_offline.sh /offline/install.sh
 RUN chmod +x /offline/install.sh
 RUN mkdir -p /dist && \
     cp /usr/local/bin/chezmoi /offline/chezmoi && \
-    cp -r /var/cache/apt/archives/*.deb /offline/debs/ && \
     tar -czf /offline/home_snapshot.tar.gz -C /home/user .

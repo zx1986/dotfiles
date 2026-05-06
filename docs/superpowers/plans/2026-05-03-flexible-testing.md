@@ -1,6 +1,6 @@
 # Flexible & Lightweight Testing Framework Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Replace the Docker-based testing with a local, multi-OS template simulation framework.
 
@@ -16,7 +16,7 @@
 - Create: `tests/lib_assert.sh`
 - Create: `tests/run_test.sh`
 
-- [ ] **Step 1: Create assertion library**
+- [x] **Step 1: Create assertion library**
 Create `tests/lib_assert.sh` with helper functions for testing.
 ```bash
 #!/bin/bash
@@ -44,7 +44,7 @@ report_results() {
 }
 ```
 
-- [ ] **Step 2: Create core test runner**
+- [x] **Step 2: Create core test runner**
 Create `tests/run_test.sh` to handle OS simulation and orchestration.
 ```bash
 #!/bin/bash
@@ -94,10 +94,10 @@ fi
 report_results
 ```
 
-- [ ] **Step 3: Set permissions**
+- [x] **Step 3: Set permissions**
 Run: `chmod +x tests/run_test.sh`
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 Run: `git add tests/lib_assert.sh tests/run_test.sh && git commit -m "test: add core simulator and assertion library"`
 
 ---
@@ -109,7 +109,7 @@ Run: `git add tests/lib_assert.sh tests/run_test.sh && git commit -m "test: add 
 - Create: `tests/suite_linux.sh`
 - Create: `tests/suite_macos.sh`
 
-- [ ] **Step 1: Create common suite**
+- [x] **Step 1: Create common suite**
 Verify files that should exist on all OSes.
 ```bash
 echo ">>> Running Common Suite..."
@@ -118,7 +118,7 @@ check "gitmessage rendered" "[[ -f \$TMP_HOME/gitmessage ]]"
 check "zshrc rendered" "[[ -f \$TMP_HOME/zshrc ]]"
 ```
 
-- [ ] **Step 2: Create Linux suite**
+- [x] **Step 2: Create Linux suite**
 Verify Linux-specific rendering.
 ```bash
 echo ">>> Running Linux Suite..."
@@ -126,7 +126,7 @@ check "No osxkeychain in gitconfig" "! grep -q 'osxkeychain' \$TMP_HOME/gitconfi
 check "APT commands in install script" "grep -q 'apt-get install' \$TMP_HOME/run_once_before_00_install_packages.sh"
 ```
 
-- [ ] **Step 3: Create macOS suite**
+- [x] **Step 3: Create macOS suite**
 Verify macOS-specific rendering.
 ```bash
 echo ">>> Running macOS Suite..."
@@ -134,7 +134,7 @@ check "Has osxkeychain in gitconfig" "grep -q 'osxkeychain' \$TMP_HOME/gitconfig
 check "Brew commands in install script" "grep -q 'brew install' \$TMP_HOME/run_once_before_00_install_packages.sh"
 ```
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 Run: `git add tests/suite_*.sh && git commit -m "test: add modular assertion suites"`
 
 ---
@@ -144,7 +144,7 @@ Run: `git add tests/suite_*.sh && git commit -m "test: add modular assertion sui
 **Files:**
 - Modify: `Makefile`
 
-- [ ] **Step 1: Add test targets**
+- [x] **Step 1: Add test targets**
 Add `test`, `test-linux`, and `test-macos` to `Makefile`.
 ```makefile
 test: test-macos test-linux ## Run all simulation tests
@@ -156,11 +156,11 @@ test-macos: ## Test macOS template rendering
 	@bash ./tests/run_test.sh darwin
 ```
 
-- [ ] **Step 2: Verify locally**
+- [x] **Step 2: Verify locally**
 Run: `make test`
 Expected: All tests pass.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 Run: `git add Makefile && git commit -m "test: integrate simulator with Makefile"`
 
 ---
@@ -171,7 +171,7 @@ Run: `git add Makefile && git commit -m "test: integrate simulator with Makefile
 - Modify: `README.md`
 - Delete: `docker/` (Optional, but user asked for "lightweight")
 
-- [ ] **Step 1: Update README.md**
+- [x] **Step 1: Update README.md**
 Replace Docker verification section with the new testing section.
 ```markdown
 ## 🧪 Testing
@@ -185,8 +185,8 @@ make test-macos   # Test macOS rendering
 ```
 ```
 
-- [ ] **Step 2: Remove old Docker setup**
+- [x] **Step 2: Remove old Docker setup**
 Run: `rm -rf docker/`
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 Run: `git add README.md && git rm -r docker/ && git commit -m "docs: update testing instructions and remove legacy docker setup"`
