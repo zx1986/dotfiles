@@ -37,6 +37,11 @@ FZF_DEFAULT_COMMAND='fd --type file --follow --hidden --exclude .git --color=alw
 FZF_DEFAULT_OPTS="--ansi"
 FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
+# Ensure spaceship theme is in fpath
+if [ -d "$HOME/.zprezto/contrib/contrib-prompt/functions" ]; then
+  fpath=("$HOME/.zprezto/contrib/contrib-prompt/functions" $fpath)
+fi
+
 # Zsh runtime configuration
 #ENABLE_CORRECTION="true"
 #CASE_SENSITIVE="true"

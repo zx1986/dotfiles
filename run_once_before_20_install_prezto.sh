@@ -15,7 +15,7 @@ fi
 if [ -d "$HOME/.zprezto" ] && [ ! -d "$HOME/.zprezto/contrib" ]; then
   if command -v git >/dev/null; then
     echo "Installing Prezto Contrib from GitHub..."
-    git clone https://github.com/belak/prezto-contrib "$HOME/.zprezto/contrib"
+    git clone --recursive https://github.com/belak/prezto-contrib "$HOME/.zprezto/contrib"
   else
     echo "WARN: Cannot install Prezto Contrib (no git)"
   fi
