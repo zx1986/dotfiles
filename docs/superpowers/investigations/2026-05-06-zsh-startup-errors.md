@@ -22,3 +22,16 @@ User reports "very many error messages" after entering zsh following initializat
 2.  Fix Ubuntu package naming/aliasing for `fd` and `bat`.
 3.  Install `eza` or fallback to `ls`.
 4.  Define or stub `_omz_register_handler`.
+
+## Resolution
+The following changes were implemented to resolve the Zsh startup errors and missing dependencies:
+1.  **Xtrace Fix:** Updated `dot_config/zsh/parts/omz-kube-ps1.plugin.zsh` to use `[[ "$DEBUG" == "true" ]]` for the debug check. This prevents `set -x` from triggering when `DEBUG` is set to `false`.
+2.  **Eza Removal:** Replaced `eza` with standard `ls` and `dircolors` across the configuration. The `ls` alias now uses standard options, and the `zstyle` completion settings use standard `ls` colors.
+3.  **Missing Dependencies:**
+    -   Removed `eza` from the installation script.
+    -   Added `fd-find` and `bat` to the Ubuntu package list.
+    -   Added symlinks for `fd` and `bat` in `run_once_before_00_install_packages.sh.tmpl` to ensure they are available under the expected names.
+4.  **Zsh Function Fix:** Stubbed `_omz_register_handler` in `dot_config/zsh/parts/omz-git.zsh` to prevent "command not found" errors.
+5.  **Cleanup:** Removed dead Prezto-related code and legacy eza-specific logic from `dot_zshrc.tmpl` and other parts of the configuration to improve maintainability.
+
+The fixes have been verified using the Linux simulation test suite (`make test-linux`).
