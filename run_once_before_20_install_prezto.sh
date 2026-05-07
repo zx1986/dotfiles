@@ -32,12 +32,4 @@ if [ -d "$HOME/.zprezto" ]; then
 
   # Install extra completions into Prezto
   COMP_DIR="$HOME/.zprezto/modules/completion/external/src"
-  if [ -d "$COMP_DIR" ]; then
-    # eza completion (bundled in repo at completions/zsh/_eza)
-    SRC="${CHEZMOI_SOURCE_DIR:-$(cd "$(dirname "$0")" && pwd)}/completions/zsh/_eza"
-    if [ -f "$SRC" ]; then
-      cp "$SRC" "$COMP_DIR/_eza"
-      echo "Installed _eza completion into Prezto"
-    fi
-  fi
 fi

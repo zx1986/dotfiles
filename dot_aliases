@@ -3,9 +3,6 @@
 # Advanced Aliases.
 # Use with caution
 
-unalias ls
-alias ls='eza'
-
 # ls, the common ones I use a lot shortened for rapid fire usage
 alias l='ls -lh'      # size,show type,human readable
 alias la='ls -lAh'    # long list,show almost all,show type,human readable
