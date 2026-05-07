@@ -30,6 +30,4 @@ if [ -d "$HOME/.zprezto" ]; then
     fi
   done
 
-  # Install extra completions into Prezto
-  COMP_DIR="$HOME/.zprezto/modules/completion/external/src"
 fi
