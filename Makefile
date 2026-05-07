@@ -15,22 +15,22 @@ init: ## Auto-detect environment and initialize dotfiles via chezmoi
 			brew install chezmoi; \
 		fi; \
 		chezmoi init --apply --source "$(PWD)"; \
-	elif [ "$(uname -s)" = "Linux" ]; then \
+	elif [ "$$(uname -s)" = "Linux" ]; then \
 		echo "Setting up Linux environment..."; \
-		if ! command -v chezmoi >/dev/null 2>&1 && [ ! -f "$(HOME)/bin/chezmoi" ] && [ ! -f "./bin/chezmoi" ]; then \
+		if ! command -v chezmoi >/dev/null 2>&1 && [ ! -x "$(HOME)/bin/chezmoi" ] && [ ! -x "./bin/chezmoi" ]; then \
 			echo "Installing chezmoi..."; \
 			curl -fsLS https://get.chezmoi.io | sh; \
+			[ -f "./bin/chezmoi" ] && chmod +x "./bin/chezmoi"; \
 		fi; \
-		if [ -f "$(HOME)/bin/chezmoi" ]; then \
+		if [ -x "$(HOME)/bin/chezmoi" ]; then \
 			"$(HOME)/bin/chezmoi" init --apply --source "$(PWD)"; \
-		elif [ -f "./bin/chezmoi" ]; then \
+		elif [ -x "./bin/chezmoi" ]; then \
 			"./bin/chezmoi" init --apply --source "$(PWD)"; \
 		elif command -v chezmoi >/dev/null 2>&1; then \
 			chezmoi init --apply --source "$(PWD)"; \
 		else \
-			echo "Error: chezmoi not found after install"; exit 1; \
+			echo "Error: chezmoi not found or not executable after install"; exit 1; \
 		fi; \
-
 	else \
 		echo "Unsupported OS: $$(uname -s)"; exit 1; \
 	fi
