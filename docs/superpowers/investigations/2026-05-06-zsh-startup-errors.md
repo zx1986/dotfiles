@@ -30,7 +30,7 @@ The following changes were implemented to resolve the Zsh startup errors and mis
 3.  **Missing Dependencies:**
     -   Removed `eza` from the installation script.
     -   Added `fd-find` and `bat` to the Ubuntu package list.
-    -   Added symlinks for `fd` and `bat` in `run_once_before_00_install_packages.sh.tmpl` to ensure they are available under the expected names.
+    -   Added conditional aliases for `fd` and `bat` in `dot_aliases` to ensure they are available under the expected names on Ubuntu.
 4.  **Zsh Function Fix:** Stubbed `_omz_register_handler` in `dot_config/zsh/parts/omz-git.zsh` to prevent "command not found" errors.
 5.  **Cleanup:** Removed dead Prezto-related code and legacy eza-specific logic from `dot_zshrc.tmpl` and other parts of the configuration to improve maintainability.
 
