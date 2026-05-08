@@ -1,13 +1,24 @@
 #!/bin/bash
 
-# NvChad installation script
+# NvChad v2.5 installation script
 # https://nvchad.com/docs/quickstart/install
+# Version: 1.1 (Force rerun after rename)
 
 if [ ! -d "$HOME/.config/nvim" ]; then
   {{- if not (index . "is_offline") }}
   echo "Installing NvChad v2.5 starter..."
   git clone https://github.com/NvChad/starter "$HOME/.config/nvim"
   {{- end }}
+elif [ ! -f "$HOME/.config/nvim/init.lua" ]; then
+  {{- if not (index . "is_offline") }}
+  echo "Existing ~/.config/nvim found but init.lua is missing. Attempting to repair..."
+  if [ -z "$(ls -A "$HOME/.config/nvim")" ]; then
+    git clone https://github.com/NvChad/starter "$HOME/.config/nvim"
+  else
+    echo "Warning: ~/.config/nvim is not empty but missing init.lua. NvChad might be broken."
+    echo "If you want a fresh install, run 'make clean' and then 'make init'."
+  fi
+  {{- end }}
 else
-  echo "NvChad (or existing nvim config) already exists at $HOME/.config/nvim. Skipping clone."
+  echo "NvChad already exists at $HOME/.config/nvim. Skipping clone."
 fi

@@ -19,7 +19,7 @@ init: ## Auto-detect environment and initialize dotfiles via chezmoi
 		echo "Setting up Linux environment..."; \
 		if ! command -v chezmoi >/dev/null 2>&1 && [ ! -f "$(HOME)/bin/chezmoi" ]; then \
 			echo "Installing chezmoi..."; \
-			curl -fsLS https://get.chezmoi.io | sh; \
+			curl -fsLS https://get.chezmoi.io | sh -s -- -b "$(HOME)/bin"; \
 		fi; \
 		if [ -f "$(HOME)/bin/chezmoi" ]; then \
 			"$(HOME)/bin/chezmoi" init --apply --source "$(PWD)"; \
