@@ -30,8 +30,8 @@ init: ## Auto-detect environment and initialize dotfiles via chezmoi
 		echo "Setting up Linux environment..."; \
 		if ! command -v chezmoi >/dev/null 2>&1 && [ ! -x "$(HOME)/bin/chezmoi" ] && [ ! -x "./bin/chezmoi" ]; then \
 			echo "Installing chezmoi..."; \
-			curl -fsLS https://get.chezmoi.io | sh; \
-			[ -f "./bin/chezmoi" ] && chmod +x "./bin/chezmoi"; \
+			curl -fsLS https://get.chezmoi.io | sh -s -- -b "$(HOME)/bin"; \
+			[ -f "$(HOME)/bin/chezmoi" ] && chmod +x "$(HOME)/bin/chezmoi"; \
 		fi; \
 		if [ -x "$(HOME)/bin/chezmoi" ]; then \
 			"$(HOME)/bin/chezmoi" init --apply --source "$(PWD)"; \
@@ -133,6 +133,17 @@ test-linux: ## Test Linux template rendering
 .PHONY: test-macos
 test-macos: ## Test macOS template rendering
 	@bash ./tests/run_test.sh darwin
+
+.PHONY: bundle-offline
+bundle-offline: ## Generate an offline installation bundle for Ubuntu
+	mkdir -p dist/
+	docker build -t xprofile-bundler -f docker/ubuntu/Dockerfile.bundle .
+	docker run --rm -v "$(PWD)/dist:/output" xprofile-bundler sh -c "tar -czf /output/xProfile-offline.tar.gz -C /offline ."
+
+
+.PHONY: clean-offline
+clean-offline: ## Remove generated offline bundles
+	rm -rf dist/
 
 # Absolutely awesome: http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 .PHONY: help

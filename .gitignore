@@ -1,4 +1,7 @@
 tmuxinator/*
 offline-packages/*
 
+dist/
+*.tar.gz
+
 .env

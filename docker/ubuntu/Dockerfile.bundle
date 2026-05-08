@@ -1,0 +1,49 @@
+# Stage 1: Download debs in a clean environment
+FROM ubuntu:22.04 AS downloader
+ENV DEBIAN_FRONTEND=noninteractive
+RUN rm -f /etc/apt/apt.conf.d/docker-clean && \
+    mkdir -p /offline/debs && \
+    apt-get update && \
+    apt-get install -d -y \
+    zsh tmux git curl wget unzip build-essential fd-find bat fzf tig ripgrep
+RUN cp /var/cache/apt/archives/*.deb /offline/debs/
+
+# Stage 2: Build the actual bundle environment
+FROM ubuntu:22.04
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install basic tools needed for bundling (these don't need to be in the offline bundle debs)
+RUN apt-get update && apt-get install -y \
+    curl git zsh tmux unzip build-essential sudo \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy pre-downloaded debs from Stage 1
+COPY --from=downloader /offline/debs /offline/debs
+
+# 2. Setup chezmoi and Neovim
+RUN sh -c "$(curl -fsLS https://get.chezmoi.io)" -- -b /usr/local/bin && \
+    curl -LO https://github.com/neovim/neovim/releases/download/v0.10.0/nvim-linux64.tar.gz && \
+    tar -C /usr/local -xzf nvim-linux64.tar.gz --strip-components=1 && \
+    mkdir -p /offline && \
+    cp nvim-linux64.tar.gz /offline/nvim-linux64.tar.gz && \
+    rm nvim-linux64.tar.gz
+
+# 3. Clone xProfile and apply
+RUN useradd -m -s /usr/bin/zsh user && \
+    echo "user ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+USER user
+WORKDIR /home/user
+COPY --chown=user:user . ./xProfile
+RUN /usr/local/bin/chezmoi apply --source ./xProfile --force --override-data '{"is_offline": false}'
+
+# 4. Warm up Neovim (Lazy & Mason)
+RUN nvim --headless "+Lazy! sync" +qa && \
+    nvim --headless "+MasonInstall lua-language-server" +qa
+
+# 5. Create final bundle structure
+USER root
+COPY docker/ubuntu/install_offline.sh /offline/install.sh
+RUN chmod +x /offline/install.sh
+RUN mkdir -p /dist && \
+    cp /usr/local/bin/chezmoi /offline/chezmoi && \
+    tar -czf /offline/home_snapshot.tar.gz -C /home/user .

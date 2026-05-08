@@ -1,6 +1,6 @@
 # NvChad v2.5 Integration Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Integrate NvChad v2.5 into the chezmoi-managed dotfiles to provide a modern Neovim environment.
 
@@ -15,7 +15,7 @@
 **Files:**
 - Modify: `run_once_install_packages.sh.tmpl`
 
-- [ ] **Step 1: Add Neovim and dependencies to Brew installation**
+- [x] **Step 1: Add Neovim and dependencies to Brew installation**
 
 Modify the macOS section to include `neovim`, `ripgrep`, `fd`, and `gcc`.
 
@@ -26,7 +26,7 @@ brew install git tig bit-git curl asdf zsh coreutils gemini-cli neovim ripgrep f
 # ... existing code ...
 ```
 
-- [ ] **Step 2: Commit changes**
+- [x] **Step 2: Commit changes**
 
 ```bash
 git add run_once_install_packages.sh.tmpl
@@ -40,7 +40,7 @@ git commit -m "feat(nvchad): add neovim and dependencies to package installer"
 **Files:**
 - Create: `run_once_install_nvchad.sh.tmpl`
 
-- [ ] **Step 1: Create the installation script**
+- [x] **Step 1: Create the installation script**
 
 This script will clone the NvChad starter if `~/.config/nvim` does not exist.
 
@@ -58,11 +58,11 @@ else
 fi
 ```
 
-- [ ] **Step 2: Ensure the script is executable**
+- [x] **Step 2: Ensure the script is executable**
 
 Run: `chmod +x run_once_install_nvchad.sh.tmpl`
 
-- [ ] **Step 3: Commit changes**
+- [x] **Step 3: Commit changes**
 
 ```bash
 git add run_once_install_nvchad.sh.tmpl
@@ -79,7 +79,7 @@ git commit -m "feat(nvchad): add run_once script to clone NvChad starter"
 - Create: `dot_config/nvim/lua/mappings.lua`
 - Create: `dot_config/nvim/lua/plugins/init.lua`
 
-- [ ] **Step 1: Create `chadrc.lua`**
+- [x] **Step 1: Create `chadrc.lua`**
 
 This is the main NvChad config entry point.
 
@@ -100,7 +100,7 @@ M.mappings = require "mappings"
 return M
 ```
 
-- [ ] **Step 2: Create `options.lua`**
+- [x] **Step 2: Create `options.lua`**
 
 ```lua
 -- dot_config/nvim/lua/options.lua
@@ -114,7 +114,7 @@ local opt = vim.opt
 opt.relativenumber = true
 ```
 
-- [ ] **Step 3: Create `mappings.lua`**
+- [x] **Step 3: Create `mappings.lua`**
 
 ```lua
 -- dot_config/nvim/lua/mappings.lua
@@ -133,7 +133,7 @@ M.general = {
 return M
 ```
 
-- [ ] **Step 4: Create `plugins/init.lua`**
+- [x] **Step 4: Create `plugins/init.lua`**
 
 ```lua
 -- dot_config/nvim/lua/plugins/init.lua
@@ -187,7 +187,7 @@ local plugins = {
 return plugins
 ```
 
-- [ ] **Step 5: Create a placeholder `configs/lspconfig.lua` (if referenced)**
+- [x] **Step 5: Create a placeholder `configs/lspconfig.lua` (if referenced)**
 
 Since `plugins/init.lua` references `configs.lspconfig`, we should ensure it exists or remove the reference. I'll create a minimal one.
 
@@ -210,7 +210,7 @@ for _, lsp in ipairs(servers) do
 end
 ```
 
-- [ ] **Step 6: Commit all config files**
+- [x] **Step 6: Commit all config files**
 
 ```bash
 git add dot_config/nvim/lua/
@@ -221,27 +221,27 @@ git commit -m "feat(nvchad): add managed lua configuration files"
 
 ### Task 4: Verification
 
-- [ ] **Step 1: Run `chezmoi apply`**
+- [x] **Step 1: Run `chezmoi apply`**
 
 Run: `chezmoi apply -v`
 Expected: Files are symlinked/copied to `~/.config/nvim/lua/`, and `nvim` is installed.
 
-- [ ] **Step 2: Launch Neovim**
+- [x] **Step 2: Launch Neovim**
 
 Run: `nvim`
 Expected: NvChad splash screen appears, Lazy.nvim starts installing plugins.
 
-- [ ] **Step 3: Verify custom options**
+- [x] **Step 3: Verify custom options**
 
 Inside nvim: `:set relativenumber?`
 Expected: `relativenumber`
 
-- [ ] **Step 4: Verify mappings**
+- [x] **Step 4: Verify mappings**
 
 Press `;` in normal mode.
 Expected: Enters command mode (equivalent to `:`).
 
-- [ ] **Step 5: Check health**
+- [x] **Step 5: Check health**
 
 Inside nvim: `:checkhealth`
 Expected: No critical errors for NvChad dependencies.
