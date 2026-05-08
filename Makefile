@@ -1,4 +1,11 @@
 KREW=./krew-"`uname | tr '[:upper:]' '[:lower:]'`_amd64"
+BATS := $(shell command -v bats 2> /dev/null)
+
+.PHONY: check-bats
+check-bats: ## Check if bats is installed
+ifndef BATS
+	$(error "bats-core not found. Please install it (e.g., 'sudo apt install bats' or 'npm install -g bats')")
+endif
 
 .PHONY: init
 init: ## Auto-detect environment and initialize dotfiles via chezmoi
