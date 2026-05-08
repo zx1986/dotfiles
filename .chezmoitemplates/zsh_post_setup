@@ -111,18 +111,6 @@ if [ $commands[kubectl] ]; then
   }
 fi
 
-# kube-ps1: show current context in RPROMPT
-# The plugin is sourced earlier via omz-kube-ps1.plugin.zsh.
-# We register a precmd hook here (after Prezto) so that RPROMPT gets set
-# on every prompt draw, overriding whatever Prezto's theme puts there.
-if (( $+functions[kube_ps1] )); then
-  _kube_ps1_rprompt() {
-    RPROMPT="$(kube_ps1)"
-  }
-  autoload -Uz add-zsh-hook
-  add-zsh-hook precmd _kube_ps1_rprompt
-fi
-
 # Helm
 if [ $commands[helm] ]; then
   helm() {
@@ -139,3 +127,6 @@ fi
 
 # Custom Alias
 [ -f ~/.aliases ] && source ~/.aliases
+
+# Ensure right prompt is empty for a cleaner look
+RPROMPT=""
