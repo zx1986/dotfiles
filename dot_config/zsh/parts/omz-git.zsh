@@ -1,5 +1,11 @@
 autoload -Uz is-at-least
 
+if ! (( $+functions[_omz_register_handler] )); then
+  _omz_register_handler() {
+    : # No-op stub for Oh My Zsh internal function
+  }
+fi
+
 # The git prompt's git commands are read-only and should not interfere with
 # other processes. This environment variable is equivalent to running with `git
 # --no-optional-locks`, but falls back gracefully for older versions of git.

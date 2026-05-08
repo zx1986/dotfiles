@@ -37,6 +37,11 @@ FZF_DEFAULT_COMMAND='fd --type file --follow --hidden --exclude .git --color=alw
 FZF_DEFAULT_OPTS="--ansi"
 FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
+# Ensure spaceship theme is in fpath
+if [ -d "$HOME/.zprezto/contrib/contrib-prompt/functions" ]; then
+  fpath=("$HOME/.zprezto/contrib/contrib-prompt/functions" $fpath)
+fi
+
 # Zsh runtime configuration
 #ENABLE_CORRECTION="true"
 #CASE_SENSITIVE="true"
@@ -60,21 +65,17 @@ SPACESHIP_PROMPT_ORDER=(
   package        # Package version
   node           # Node.js section
   ruby           # Ruby section
-  python         # Python section
+  venv           # Python virtualenv section
+  pyenv          # Pyenv section
   golang         # Go section
   php            # PHP section
   docker         # Docker section
-  docker_compose # Docker section
-  kubectl        # Kubectl context section
-  ansible        # Ansible section
+  aws            # AWS section
+  kubecontext    # Kubectl context section
   terraform      # Terraform workspace section
-  pulumi         # Pulumi stack section
   exec_time      # Execution time
-  async          # Async jobs indicator
   line_sep       # Line break
-  battery        # Battery level and status
   jobs           # Background jobs indicator
   exit_code      # Exit code section
-  sudo           # Sudo indicator
   char           # Prompt character
 )
