@@ -70,6 +70,7 @@ SPACESHIP_PROMPT_ORDER=(
   golang         # Go section
   php            # PHP section
   docker         # Docker section
+  aws            # AWS section
   kubecontext    # Kubectl context section
   terraform      # Terraform workspace section
   exec_time      # Execution time
