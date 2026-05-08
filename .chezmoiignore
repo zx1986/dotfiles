@@ -2,11 +2,13 @@ chezmoidata.yaml
 README.md
 README-Template.md
 Makefile
+docs/
+dist/
 docker/
 completions/
 scripts/
 offline-packages/
+tests/
 .gitignore
 .env
 .env.example
-tests
