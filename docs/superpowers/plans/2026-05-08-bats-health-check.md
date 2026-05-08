@@ -15,7 +15,7 @@
 **Files:**
 - Modify: `Makefile`
 
-- [ ] **Step 1: Add a check for bats in Makefile**
+- [x] **Step 1: Add a check for bats in Makefile**
 
 Modify the `Makefile` to include a helper to check for `bats`.
 
@@ -29,22 +29,22 @@ ifndef BATS
 endif
 ```
 
-- [ ] **Step 2: Run the check to verify it fails (if bats is missing)**
+- [x] **Step 2: Run the check to verify it fails (if bats is missing)**
 
 Run: `make check-bats`
 Expected: Error: "bats-core not found. Please install it..."
 
-- [ ] **Step 3: Install bats (manual step for the engineer)**
+- [x] **Step 3: Install bats (manual step for the engineer)**
 
 Run: `sudo apt update && sudo apt install -y bats`
 (Or whichever method is appropriate for the environment)
 
-- [ ] **Step 4: Run the check to verify it passes**
+- [x] **Step 4: Run the check to verify it passes**
 
 Run: `make check-bats`
 Expected: No output (success).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add Makefile
@@ -58,7 +58,7 @@ git commit -m "chore: add bats-core dependency check to Makefile"
 **Files:**
 - Create: `tests/health_check.bats`
 
-- [ ] **Step 1: Create the basic Bats file with Zsh startup test**
+- [x] **Step 1: Create the basic Bats file with Zsh startup test**
 
 ```bash
 #!/usr/bin/env bats
@@ -70,12 +70,12 @@ git commit -m "chore: add bats-core dependency check to Makefile"
 }
 ```
 
-- [ ] **Step 2: Run the test to verify it passes (assuming clean environment)**
+- [x] **Step 2: Run the test to verify it passes (assuming clean environment)**
 
 Run: `bats tests/health_check.bats`
 Expected: 1 test, 0 failures
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add tests/health_check.bats
@@ -89,9 +89,9 @@ git commit -m "test: add zsh startup health check"
 **Files:**
 - Modify: `tests/health_check.bats`
 
-- [ ] **Step 1: Add theme and plugin tests**
+- [x] **Step 1: Add theme and plugin tests**
 
-Update `tests/health_check.bats` to include checks for Spaceship theme and core aliases.
+Update `tests/health_check.bats` to include checks for Spaceship theme, core aliases, and completions.
 
 ```bash
 #!/usr/bin/env bats
@@ -103,24 +103,30 @@ Update `tests/health_check.bats` to include checks for Spaceship theme and core 
 }
 
 @test "Spaceship theme is loaded" {
-  run zsh -i -c "typeset -f spaceship_setup > /dev/null && echo 'found'"
+  run zsh -i -c "typeset -f spaceship_prompt > /dev/null && ([[ -n \$SPACESHIP_VERSION ]] || [[ -n \$SPACESHIP_ROOT ]]) && echo 'found'"
   [ "$status" -eq 0 ]
   [[ "$output" == *"found"* ]]
 }
 
-@test "Core aliases are available (git, kubectl)" {
-  run zsh -i -c "alias g > /dev/null && alias k > /dev/null && echo 'found'"
+@test "Core aliases are available and mapped correctly (g, k)" {
+  run zsh -i -c "[[ \"\$(alias g)\" == \"g=git\" ]] && [[ \"\$(alias k)\" == \"k=kubectl\" ]] && echo 'found'"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"found"* ]]
+}
+
+@test "Zsh completions are available (git, kubectl)" {
+  run zsh -i -c "[[ \"\$(whence -w _git)\" == \"_git: function\" ]] && [[ \"\$(whence -w _kubectl)\" == \"_kubectl: function\" ]] && echo 'found'"
   [ "$status" -eq 0 ]
   [[ "$output" == *"found"* ]]
 }
 ```
 
-- [ ] **Step 2: Run the tests**
+- [x] **Step 2: Run the tests**
 
 Run: `bats tests/health_check.bats`
-Expected: 3 tests, 0 failures
+Expected: 4 tests, 0 failures
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add tests/health_check.bats
@@ -134,7 +140,7 @@ git commit -m "test: add theme and plugin health checks"
 **Files:**
 - Modify: `Makefile`
 
-- [ ] **Step 1: Add the 'health' target**
+- [x] **Step 1: Add the 'health' target**
 
 ```makefile
 .PHONY: health
@@ -142,12 +148,12 @@ health: check-bats
 	bats tests/health_check.bats
 ```
 
-- [ ] **Step 2: Run the final command**
+- [x] **Step 2: Run the final command**
 
 Run: `make health`
 Expected: Bats output showing 3 passing tests.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add Makefile

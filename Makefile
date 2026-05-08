@@ -7,6 +7,10 @@ ifndef BATS
 	$(error "bats-core not found. Please install it (e.g., 'sudo apt install bats' or 'npm install -g bats')")
 endif
 
+.PHONY: health
+health: check-bats ## Run environment health checks
+	bats tests/health_check.bats
+
 .PHONY: init
 init: ## Auto-detect environment and initialize dotfiles via chezmoi
 	@echo "Detected OS: $$(uname -s)"
