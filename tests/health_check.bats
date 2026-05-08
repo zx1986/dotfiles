@@ -23,3 +23,9 @@
   [ "$status" -eq 0 ]
   [[ "$output" == *"found"* ]]
 }
+
+@test "Right prompt (RPROMPT) is empty" {
+  run zsh -i -c "echo \"\$RPROMPT\""
+  [ "$status" -eq 0 ]
+  [ "$output" = "" ]
+}
