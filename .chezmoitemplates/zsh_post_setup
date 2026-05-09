@@ -93,23 +93,27 @@ compdef _aws_profiles asp
 
 # fzf
 if command -v fzf >/dev/null; then
-  # Completion and key-bindings paths
-  local fzf_shell_paths=(
-    "/opt/homebrew/opt/fzf/shell"      # Homebrew (Apple Silicon)
-    "/usr/local/opt/fzf/shell"         # Homebrew (Intel)
-    "/usr/share/doc/fzf/examples"      # Ubuntu/Debian
-  )
-
   # Fallback for manual install
-  [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+  if [ -f ~/.fzf.zsh ]; then
+    source ~/.fzf.zsh
+  else
+    # Dynamic detection for brew/apt installs
+    () {
+      local fzf_shell_paths=(
+        "/opt/homebrew/opt/fzf/shell"      # Homebrew (Apple Silicon)
+        "/usr/local/opt/fzf/shell"         # Homebrew (Intel)
+        "/usr/share/doc/fzf/examples"      # Ubuntu/Debian
+      )
 
-  for base in $fzf_shell_paths; do
-    if [ -d "$base" ]; then
-      [ -f "$base/completion.zsh" ] && source "$base/completion.zsh"
-      [ -f "$base/key-bindings.zsh" ] && source "$base/key-bindings.zsh"
-      break
-    fi
-  done
+      for base in $fzf_shell_paths; do
+        if [ -d "$base" ]; then
+          [ -f "$base/completion.zsh" ] && source "$base/completion.zsh"
+          [ -f "$base/key-bindings.zsh" ] && source "$base/key-bindings.zsh"
+          break
+        fi
+      done
+    }
+  fi
 fi
 
 # z

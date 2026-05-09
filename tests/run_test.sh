@@ -50,6 +50,12 @@ export TMP_HOME
 # Load assertions
 source "$(dirname "$0")/lib_assert.sh"
 
+# Verify fzf fix
+if [[ -f "$(dirname "$0")/verify_fzf_fix.sh" ]]; then
+  echo ">>> Verifying fzf fix..."
+  "$(dirname "$0")/verify_fzf_fix.sh" "$TMP_HOME/.zshrc" || true
+fi
+
 # Run suites
 if [[ -f "$(dirname "$0")/suite_common.sh" ]]; then
   source "$(dirname "$0")/suite_common.sh"
