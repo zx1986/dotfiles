@@ -22,12 +22,6 @@
   local = green bold
   remote = cyan bold
 
-[color "diff-highlight"]
-  oldNormal = red bold
-  oldHighlight = red bold 52
-  newNormal = green bold
-  newHighlight = green bold 22
-
 [color "diff"]
   meta = 227
   frag = magenta bold
@@ -57,13 +51,23 @@
   ff = only
   conflictstyle = diff3
 
-[diff]
-  tool = vimdiff
-
 [pager]
   branch = false
-  diff = diff-so-fancy | less --tabs=2 -RFXi
-  show = diff-so-fancy | less --tabs=2 -RFXi
+  diff = delta
+  show = delta
+
+[delta]
+  navigate = true
+  light = false
+  side-by-side = true
+  line-numbers = true
+
+[interactive]
+  diffFilter = delta --color-only
+
+[diff]
+  tool = vimdiff
+  colorMoved = default
 
 [alias]
   vtags = ! git tag | sort -V
