@@ -29,7 +29,7 @@ for font in "${fonts[@]}"; do
 
     echo "Downloading ${font} from ${download_url}..."
     if wget -q "$download_url"; then
-        unzip -o "$zip_file" -d "$fonts_dir"
+        unzip -o "$zip_file" -d "${fonts_dir}/${font}"
         rm "$zip_file"
     else
         echo "Failed to download ${font}"
