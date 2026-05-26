@@ -36,7 +36,7 @@
   Run: `chezmoi apply` (Note: In this environment, we are editing the source files in `~/dotfiles`)
 - [x] **Step 2: Verify delta is installed**
   Run: `delta --version`
-  Expected: `delta 0.19.2`
+  Expected: `delta 0.18.2`
 - [x] **Step 3: Verify git configuration**
   Run: `git config --get pager.diff`
   Expected: `delta`
