@@ -1,0 +1,50 @@
+#!/bin/bash
+# Description: Install Nerd Fonts for Linux (Ubuntu)
+# Managed by Chezmoi
+
+{{- if and (eq .chezmoi.os "linux") (not (index . "is_offline")) }}
+set -e
+
+fonts_dir="${HOME}/.local/share/fonts"
+if [[ ! -d "$fonts_dir" ]]; then
+    mkdir -p "$fonts_dir"
+fi
+
+version="{{ .fonts.version }}"
+declare -a fonts=(
+{{- range .fonts.selected }}
+    "{{ . }}"
+{{- end }}
+)
+
+for font in "${fonts[@]}"; do
+    zip_file="${font}.zip"
+    download_url="https://github.com/ryanoasis/nerd-fonts/releases/download/${version}/${zip_file}"
+    
+    # Skip if font directory already exists (basic idempotency)
+    if [[ -d "${fonts_dir}/${font}" ]]; then
+        echo "Font ${font} already exists in ${fonts_dir}, skipping download."
+        continue
+    fi
+
+    echo "Downloading ${font} from ${download_url}..."
+    if wget -q "$download_url"; then
+        unzip -o "$zip_file" -d "${fonts_dir}/${font}"
+        rm "$zip_file"
+    else
+        echo "Failed to download ${font}"
+    fi
+done
+
+# Cleanup Windows Compatible files as in original script
+find "$fonts_dir" -name '*Windows Compatible*' -delete
+
+# Refresh font cache
+if command -v fc-cache >/dev/null; then
+    echo "Updating font cache..."
+    fc-cache -fv
+fi
+
+{{- else }}
+# Skipping font installation (OS is not Linux or offline mode is active)
+{{- end }}

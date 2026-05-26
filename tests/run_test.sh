@@ -40,6 +40,7 @@ find . -maxdepth 1 -name "run_*" | while read -r f; do
     -f \
     --init \
     --source . \
+    --override-data-file chezmoidata.yaml \
     --override-data "{\"chezmoi\": {\"os\": \"$OS_TYPE\", \"homeDir\": \"$TMP_HOME\"}}" \
     "$f" > "$TMP_HOME/$TARGET_NAME"
 done
