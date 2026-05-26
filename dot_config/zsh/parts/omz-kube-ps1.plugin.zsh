@@ -18,7 +18,7 @@
 # limitations under the License.
 
 # Debug
-[[ -n $DEBUG ]] && set -x
+[[ "$DEBUG" == "true" ]] && set -x
 
 # Default values for the prompt
 # Override these values in ~/.zshrc or ~/.bashrc

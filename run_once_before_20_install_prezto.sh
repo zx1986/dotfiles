@@ -15,7 +15,7 @@ fi
 if [ -d "$HOME/.zprezto" ] && [ ! -d "$HOME/.zprezto/contrib" ]; then
   if command -v git >/dev/null; then
     echo "Installing Prezto Contrib from GitHub..."
-    git clone https://github.com/belak/prezto-contrib "$HOME/.zprezto/contrib"
+    git clone --recursive https://github.com/belak/prezto-contrib "$HOME/.zprezto/contrib"
   else
     echo "WARN: Cannot install Prezto Contrib (no git)"
   fi
@@ -30,14 +30,4 @@ if [ -d "$HOME/.zprezto" ]; then
     fi
   done
 
-  # Install extra completions into Prezto
-  COMP_DIR="$HOME/.zprezto/modules/completion/external/src"
-  if [ -d "$COMP_DIR" ]; then
-    # eza completion (bundled in repo at completions/zsh/_eza)
-    SRC="${CHEZMOI_SOURCE_DIR:-$(cd "$(dirname "$0")" && pwd)}/completions/zsh/_eza"
-    if [ -f "$SRC" ]; then
-      cp "$SRC" "$COMP_DIR/_eza"
-      echo "Installed _eza completion into Prezto"
-    fi
-  fi
 fi
