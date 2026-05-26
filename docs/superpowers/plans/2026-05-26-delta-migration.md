@@ -16,9 +16,8 @@
 - Modify: `run_once_before_00_install_packages.sh.tmpl`
 - Modify: `dot_tool-versions`
 
-- [x] **Step 1: Add git-delta to Brew packages (macOS)**
-- [x] **Step 2: Add delta plugin to ASDF (Linux/Common)**
-- [x] **Step 3: Pin delta version in .tool-versions**
+- [x] **Step 1: Add delta plugin to ASDF (Universal)**
+- [x] **Step 2: Pin delta version in .tool-versions**
 
 ### Task 2: Configure Git to use Delta
 

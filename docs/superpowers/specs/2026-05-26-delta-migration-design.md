@@ -9,8 +9,7 @@ Switch from `diff-so-fancy` to `delta` (git-delta), which is a more modern and f
 ## Changes
 
 ### 1. Installation Scripts
-- **macOS**: Add `git-delta` to the `brew install` list in `run_once_before_00_install_packages.sh.tmpl`.
-- **Linux**: Add `asdf plugin add delta` to `run_once_before_00_install_packages.sh.tmpl` and add `delta 0.18.2` to `dot_tool-versions`. This ensures parity across platforms using the existing `asdf` setup.
+- **Universal**: Add `asdf plugin add delta` to `run_once_before_00_install_packages.sh.tmpl` and add `delta 0.18.2` to `dot_tool-versions`. This ensures `delta` is managed consistently via `asdf` on both macOS and Linux, avoiding redundant installations via platform-specific package managers like Homebrew.
 
 ### 2. Git Configuration
 Update `dot_gitconfig.tmpl` to:
