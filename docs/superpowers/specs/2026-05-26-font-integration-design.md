@@ -19,8 +19,6 @@ fonts:
   version: "v3.2.1"
   selected:
     - JetBrainsMono
-    - Meslo
-    - Noto
     - SourceCodePro
 ```
 

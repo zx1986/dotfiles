@@ -22,8 +22,6 @@ fonts:
   version: "v3.2.1"
   selected:
     - JetBrainsMono
-    - Meslo
-    - Noto
     - SourceCodePro
 ```
 
@@ -104,7 +102,7 @@ fi
 - [ ] **Step 2: Test template rendering for Linux**
 
 Run: `chezmoi execute-template --init --override-data '{"chezmoi": {"os": "linux"}, "is_offline": false}' run_once_after_install_fonts.sh.tmpl`
-Expected: Shell script with JetBrainsMono, Meslo, etc. in the list.
+Expected: Shell script with JetBrainsMono, SourceCodePro, etc. in the list.
 
 - [ ] **Step 3: Test template rendering for macOS (should be empty/skipped)**
 
