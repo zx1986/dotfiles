@@ -58,3 +58,13 @@
   # Check for 0.9 or 0.10 or 0.11 etc.
   [[ "$output" =~ "NVIM v0."([9]|[1-9][0-9]) ]]
 }
+
+@test "tree is available" {
+  run command -v tree
+  [ "$status" -eq 0 ]
+}
+
+@test "ag is available" {
+  run command -v ag
+  [ "$status" -eq 0 ]
+}
