@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 
 # Automated TPM plugin installation
 # This script runs after dotfiles are applied to ensure ~/.tmux.conf.local is present.

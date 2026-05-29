@@ -69,6 +69,11 @@
   [ "$status" -eq 0 ]
 }
 
+@test "tmux is available" {
+  run command -v tmux
+  [ "$status" -eq 0 ]
+}
+
 @test "tmux plugins are installed" {
   # Check for at least one default plugin from dot_tmux.conf.local
   [ -d "$HOME/.tmux/plugins/tmux-sensible" ]
