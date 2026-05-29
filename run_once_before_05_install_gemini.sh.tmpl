@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 # --- Platform Specific Installation ---
 {{ if eq .chezmoi.os "linux" -}}
@@ -12,6 +13,12 @@ fi
 if ! command -v gemini >/dev/null; then
   echo "Installing gemini-cli globally..."
   sudo npm install -g @google/gemini-cli
+fi
+{{ else if eq .chezmoi.os "darwin" -}}
+# macOS: Install Gemini-CLI via Homebrew
+if ! command -v gemini >/dev/null; then
+  echo "Installing gemini-cli via Homebrew..."
+  brew install gemini-cli
 fi
 {{ end -}}
 
