@@ -46,3 +46,8 @@
     [ "$output" = "600" ]
   fi
 }
+
+@test "gemini-cli is available" {
+  run command -v gemini
+  [ "$status" -eq 0 ]
+}
