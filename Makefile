@@ -9,7 +9,7 @@ endif
 
 .PHONY: health
 health: check-bats ## Run environment health checks
-	bats tests/health_check.bats
+	COLUMNS=80 LINES=24 bats tests/health_check.bats
 
 .PHONY: init
 init: ## Auto-detect environment and initialize dotfiles via chezmoi

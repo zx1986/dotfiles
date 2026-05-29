@@ -78,3 +78,9 @@
   # Check for at least one default plugin from dot_tmux.conf.local
   [ -d "$HOME/.tmux/plugins/tmux-sensible" ]
 }
+
+@test "fzf keybindings are loaded" {
+  run zsh -i -c "typeset -f fzf-history-widget > /dev/null && echo 'found'"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"found"* ]]
+}
