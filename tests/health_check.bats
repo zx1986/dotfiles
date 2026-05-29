@@ -51,3 +51,10 @@
   run command -v gemini
   [ "$status" -eq 0 ]
 }
+
+@test "neovim is installed and version is 0.9+" {
+  run nvim --version
+  [ "$status" -eq 0 ]
+  # Check for 0.9 or 0.10 or 0.11 etc.
+  [[ "$output" =~ "NVIM v0."([9]|[1-9][0-9]) ]]
+}
