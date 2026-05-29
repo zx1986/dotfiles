@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Only run on Linux/Ubuntu
+{{ if eq .chezmoi.os "linux" -}}
+SSH_KEY="$HOME/.ssh/id_ed25519"
+
+if [ ! -f "$SSH_KEY" ]; then
+  echo "Generating new SSH key for {{ .user.email }}..."
+  mkdir -p "$HOME/.ssh"
+  chmod 700 "$HOME/.ssh"
+  ssh-keygen -t ed25519 -C "{{ .user.email }}" -N "" -f "$SSH_KEY"
+  chmod 600 "$SSH_KEY"
+  echo "SSH key generated successfully."
+else
+  echo "SSH key already exists at $SSH_KEY."
+fi
+{{ end -}}
