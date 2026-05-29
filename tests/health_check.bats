@@ -29,3 +29,20 @@
   [ "$status" -eq 0 ]
   [ "$output" = "" ]
 }
+
+@test "git config has correct user email" {
+  run git config --get user.email
+  [ "$status" -eq 0 ]
+  [ "$output" = "zx1986@gmail.com" ]
+}
+
+@test "ssh key id_ed25519 exists" {
+  [ -f "$HOME/.ssh/id_ed25519" ]
+}
+
+@test "ssh key id_ed25519 has correct permissions" {
+  if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    run stat -c "%a" "$HOME/.ssh/id_ed25519"
+    [ "$output" = "600" ]
+  fi
+}
