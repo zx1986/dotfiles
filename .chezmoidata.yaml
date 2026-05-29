@@ -10,3 +10,7 @@ user:
   name: "張旭"
   email: "zx1986@gmail.com"
   username: "zx1986"
+
+gemini:
+  extensions:
+    - https://github.com/obra/superpowers
