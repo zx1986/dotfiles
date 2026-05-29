@@ -95,10 +95,18 @@ compdef _aws_profiles asp
 if command -v fzf >/dev/null; then
   # Dynamic detection for brew/apt installs
   () {
+    # Check legacy/manual install file first
+    if [ -f ~/.fzf.zsh ]; then
+      source ~/.fzf.zsh
+      return
+    fi
+
     local fzf_shell_paths=(
       "/opt/homebrew/opt/fzf/shell"      # Homebrew (Apple Silicon)
       "/usr/local/opt/fzf/shell"         # Homebrew (Intel)
       "/usr/share/doc/fzf/examples"      # Ubuntu/Debian
+      "$HOME/.fzf/shell"                 # Manual git clone
+      "$HOME/.fzf"                       # Manual git clone (alt)
       "$HOME/.config/fzf"                # Local cache
     )
 
@@ -118,8 +126,8 @@ if command -v fzf >/dev/null; then
       {{- if not (index . "is_offline") }}
       if command -v curl >/dev/null; then
         echo "fzf integration files missing. Downloading to $local_path..."
-        curl -sSL -o "$local_path/completion.zsh" https://raw.githubusercontent.com/junegunn/fzf/master/shell/completion.zsh
-        curl -sSL -o "$local_path/key-bindings.zsh" https://raw.githubusercontent.com/junegunn/fzf/master/shell/key-bindings.zsh
+        curl -fsSL -o "$local_path/completion.zsh" https://raw.githubusercontent.com/junegunn/fzf/master/shell/completion.zsh
+        curl -fsSL -o "$local_path/key-bindings.zsh" https://raw.githubusercontent.com/junegunn/fzf/master/shell/key-bindings.zsh
         [ -f "$local_path/completion.zsh" ] && source "$local_path/completion.zsh"
         [ -f "$local_path/key-bindings.zsh" ] && source "$local_path/key-bindings.zsh"
       fi
