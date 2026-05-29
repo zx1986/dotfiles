@@ -93,27 +93,39 @@ compdef _aws_profiles asp
 
 # fzf
 if command -v fzf >/dev/null; then
-  # Fallback for manual install
-  if [ -f ~/.fzf.zsh ]; then
-    source ~/.fzf.zsh
-  else
-    # Dynamic detection for brew/apt installs
-    () {
-      local fzf_shell_paths=(
-        "/opt/homebrew/opt/fzf/shell"      # Homebrew (Apple Silicon)
-        "/usr/local/opt/fzf/shell"         # Homebrew (Intel)
-        "/usr/share/doc/fzf/examples"      # Ubuntu/Debian
-      )
+  # Dynamic detection for brew/apt installs
+  () {
+    local fzf_shell_paths=(
+      "/opt/homebrew/opt/fzf/shell"      # Homebrew (Apple Silicon)
+      "/usr/local/opt/fzf/shell"         # Homebrew (Intel)
+      "/usr/share/doc/fzf/examples"      # Ubuntu/Debian
+      "$HOME/.config/fzf"                # Local cache
+    )
 
-      for base in $fzf_shell_paths; do
-        if [ -d "$base" ]; then
-          [ -f "$base/completion.zsh" ] && source "$base/completion.zsh"
-          [ -f "$base/key-bindings.zsh" ] && source "$base/key-bindings.zsh"
-          break
-        fi
-      done
-    }
-  fi
+    local found=false
+    for base in $fzf_shell_paths; do
+      if [ -f "$base/key-bindings.zsh" ]; then
+        [ -f "$base/completion.zsh" ] && source "$base/completion.zsh"
+        source "$base/key-bindings.zsh"
+        found=true; break
+      fi
+    done
+
+    # Self-heal: Download if missing
+    if [ "$found" = false ]; then
+      local local_path="$HOME/.config/fzf"
+      mkdir -p "$local_path"
+      {{- if not (index . "is_offline") }}
+      if command -v curl >/dev/null; then
+        echo "fzf integration files missing. Downloading to $local_path..."
+        curl -sSL -o "$local_path/completion.zsh" https://raw.githubusercontent.com/junegunn/fzf/master/shell/completion.zsh
+        curl -sSL -o "$local_path/key-bindings.zsh" https://raw.githubusercontent.com/junegunn/fzf/master/shell/key-bindings.zsh
+        [ -f "$local_path/completion.zsh" ] && source "$local_path/completion.zsh"
+        [ -f "$local_path/key-bindings.zsh" ] && source "$local_path/key-bindings.zsh"
+      fi
+      {{- end }}
+    fi
+  }
 fi
 
 # z
