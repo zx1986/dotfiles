@@ -1,7 +1,7 @@
 [user]
-  name = 張旭
-  email = zx1986@gmail.com
-  username = zx1986
+  name = {{ .user.name }}
+  email = {{ .user.email }}
+  username = {{ .user.username }}
 
 [init]
   templatedir = ~/.gittemplate
