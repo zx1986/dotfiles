@@ -4,8 +4,13 @@ LANG='en_US.UTF-8'
 LC_ALL='en_US.UTF-8'
 LC_CTYPE='UTF-8'
 
+KUBE_EDITOR='nvim'
 EDITOR='nvim'
 VISUAL='nvim'
+
+DOCKER_DEFAULT_PLATFORM="linux/amd64"
+
+OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
 
 {{ if eq .chezmoi.os "darwin" -}}
 # macOS-specific
