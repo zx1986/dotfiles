@@ -84,3 +84,9 @@
   [ "$status" -eq 0 ]
   [[ "$output" == *"found"* ]]
 }
+
+@test "delta is available and version is 0.18+" {
+  run delta --version
+  [ "$status" -eq 0 ]
+  [[ "$output" =~ "delta 0."(1[8-9]|[2-9][0-9]) ]]
+}
