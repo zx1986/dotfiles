@@ -41,6 +41,18 @@ if command -v apt-get >/dev/null; then
   sudo apt-get update -qq
   # Added packages for parity with macOS and to pass verification
   sudo apt-get install -y zsh tmux git curl wget unzip build-essential fd-find bat fzf tig ripgrep bats neovim tree silversearcher-ag
+
+  # --- Install delta via dpkg ---
+  DELTA_VERSION="0.18.2"
+  DELTA_DEB="git-delta_${DELTA_VERSION}_amd64.deb"
+  DELTA_URL="https://github.com/dandavison/delta/releases/download/${DELTA_VERSION}/${DELTA_DEB}"
+
+  if ! command -v delta >/dev/null; then
+    echo "Installing delta ${DELTA_VERSION} via dpkg..."
+    wget -q "${DELTA_URL}" -O "/tmp/${DELTA_DEB}"
+    sudo dpkg -i "/tmp/${DELTA_DEB}"
+    rm "/tmp/${DELTA_DEB}"
+  fi
 fi
 
 # --- Install asdf ---
