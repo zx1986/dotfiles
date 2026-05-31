@@ -75,7 +75,6 @@ export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
 if command -v asdf >/dev/null; then
   asdf plugin add golang || true
   asdf plugin add terraform || true
-  asdf plugin add delta || true
 
   if [ -f "$HOME/.tool-versions" ]; then
       echo "Installing ASDF versions..."
