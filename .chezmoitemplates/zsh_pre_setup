@@ -29,6 +29,9 @@ FZF_BASE="/usr/bin/fzf"
 ZSH_FUNC_DIR="/usr/share/zsh/vendor-functions/"
 {{ end -}}
 
+# Add ~/.local/bin to PATH (used by antigravity-cli and others)
+PATH="$HOME/.local/bin:$PATH"
+
 # Kubernetes
 KUBECONFIG_PATH=~/.kube
 KUBECONFIG=~/.kube/config
