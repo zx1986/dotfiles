@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Install antigravity-cli (agy)
+# Official installer: https://antigravity.google/cli/install.sh
+
+set -e
+
+if [ ! -f "$HOME/.local/bin/agy" ]; then
+    echo "Installing antigravity-cli..."
+    curl -fsSL https://antigravity.google/cli/install.sh | bash
+else
+    echo "antigravity-cli is already installed."
+fi
+
+# Final verification
+if [ -f "$HOME/.local/bin/agy" ]; then
+    echo "Verification successful: agy found in ~/.local/bin"
+else
+    echo "Error: agy installation failed."
+    exit 1
+fi

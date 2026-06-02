@@ -52,6 +52,11 @@
   [ "$status" -eq 0 ]
 }
 
+@test "antigravity-cli is available" {
+  run command -v agy
+  [ "$status" -eq 0 ]
+}
+
 @test "neovim is installed and version is 0.9+" {
   run nvim --version
   [ "$status" -eq 0 ]
