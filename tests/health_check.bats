@@ -53,7 +53,7 @@
 }
 
 @test "antigravity-cli is available" {
-  run command -v agy
+  run zsh -i -c "command -v agy"
   [ "$status" -eq 0 ]
 }
 
