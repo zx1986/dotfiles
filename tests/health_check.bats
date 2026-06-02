@@ -95,3 +95,9 @@
   [ "$status" -eq 0 ]
   [[ "$output" =~ "delta 0."(1[8-9]|[2-9][0-9]) ]]
 }
+
+@test "gh CLI is available" {
+  run command -v gh
+  [ "$status" -eq 0 ]
+}
+
