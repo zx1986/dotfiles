@@ -17,41 +17,9 @@
 - Modify: `tests/suite_linux.sh`
 - Modify: `tests/health_check.bats`
 
-- [ ] **Step 1: Write failing checks in tests**
-
-Modify `tests/suite_macos.sh` to add the `gh` check inside the Homebrew install list:
-```bash
-check "gh in brew install list" "grep -q 'gh' \$TMP_HOME/00_install_packages.sh"
-```
-
-Modify `tests/suite_linux.sh` to add the `gh` check inside the APT install list:
-```bash
-check "gh in apt install list" "grep -q 'gh' \$TMP_HOME/00_install_packages.sh"
-```
-
-Modify `tests/health_check.bats` to add the `gh` CLI command verification at the end of the file:
-```bash
-@test "gh CLI is available" {
-  run command -v gh
-  [ "$status" -eq 0 ]
-}
-```
-
-- [ ] **Step 2: Run test suite to verify failure**
-
-Run:
-```bash
-./tests/run_test.sh linux && ./tests/run_test.sh darwin
-```
-Expected output: The suite runs and fails because the checks for `gh` in `00_install_packages.sh` are not satisfied.
-
-- [ ] **Step 3: Commit the test changes**
-
-Run:
-```bash
-git add tests/suite_macos.sh tests/suite_linux.sh tests/health_check.bats
-git commit -m "test: add failing checks for github cli package installation"
-```
+- [x] **Step 1: Write failing checks in tests** (Committed)
+- [x] **Step 2: Run test suite to verify failure** (Committed)
+- [x] **Step 3: Commit the test changes** (Committed)
 
 ---
 
@@ -62,25 +30,29 @@ git commit -m "test: add failing checks for github cli package installation"
 
 - [ ] **Step 1: Modify the package installation template**
 
-Modify the macOS Brew install list to append `gh`:
+Edit [run_once_before_00_install_packages.sh.tmpl](file:///home/kasm-user/.local/share/chezmoi/run_once_before_00_install_packages.sh.tmpl).
+
+1. Under the macOS section (around line 18), append `gh` to the end of the `brew install` line:
 ```bash
 brew install git tmux tig bit-git curl asdf zsh coreutils neovim ripgrep fd gcc fzf bats tree the_silver_searcher git-delta less gh
 ```
 
-Modify the Linux online section under `if command -v apt-get >/dev/null; then` to add the official repository keyring, register the repository, and add `gh` to the end of the core package installation list:
+2. Under the Linux online section, right after the Neovim PPA setup (around line 38), insert the official repository setup commands:
 ```bash
-  echo "Adding Neovim PPA..."
-  sudo add-apt-repository -y ppa:neovim-ppa/unstable
+  echo "Installing GitHub CLI..."
+  (type -p wget >/dev/null || (sudo apt update && sudo apt install wget -y)) \
+      && sudo mkdir -p -m 755 /etc/apt/keyrings \
+      && out=$(mktemp) && wget -nv -O$out https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+      && cat $out | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
+      && sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+      && sudo mkdir -p -m 755 /etc/apt/sources.list.d \
+      && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+      && sudo apt update \
+      && sudo apt install gh -y
+```
 
-  echo "Adding GitHub CLI repository..."
-  sudo mkdir -p -m 755 /etc/apt/keyrings
-  wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null
-  sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg
-  echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
-
-  echo "Installing core packages via apt..."
-  sudo apt-get update -qq
-  # Added packages for parity with macOS and to pass verification
+3. Update the Linux core package installation line to append `gh`:
+```bash
   sudo apt-get install -y zsh tmux git curl wget unzip build-essential fd-find bat fzf tig ripgrep bats neovim tree silversearcher-ag gh
 ```
 
@@ -88,7 +60,7 @@ Modify the Linux online section under `if command -v apt-get >/dev/null; then` t
 
 Run:
 ```bash
-./tests/run_test.sh linux && ./tests/run_test.sh darwin
+PATH=/home/kasm-user/Desktop/bin:$PATH make test
 ```
 Expected output: Both test environments run successfully with all tests passing.
 
@@ -96,7 +68,7 @@ Expected output: Both test environments run successfully with all tests passing.
 
 Run:
 ```bash
-bats tests/health_check.bats
+PATH=/home/kasm-user/Desktop/bin:$PATH bats tests/health_check.bats
 ```
 Expected output: The suite completes successfully (and the new `gh CLI is available` test passes).
 
@@ -117,7 +89,7 @@ git commit -m "feat: add github cli installation for macos and ubuntu online"
 
 - [ ] **Step 1: Modify Dockerfile.bundle for offline download**
 
-Modify the `downloader` stage to install `wget`, `curl`, and `gnupg`, set up the official GitHub repository, update apt index, and download the `gh` package into the offline cache directory:
+Edit [Dockerfile.bundle](file:///home/kasm-user/.local/share/chezmoi/docker/ubuntu/Dockerfile.bundle). Modify the `downloader` stage to install `wget`, set up the official GitHub repository, update the apt index, and download the `gh` package into the offline cache directory:
 ```dockerfile
 # Stage 1: Download debs in a clean environment
 FROM ubuntu:22.04 AS downloader
@@ -125,9 +97,9 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN rm -f /etc/apt/apt.conf.d/docker-clean && \
     mkdir -p /offline/debs && \
     apt-get update && \
-    apt-get install -y wget curl gnupg && \
+    apt-get install -y wget && \
     mkdir -p -m 755 /etc/apt/keyrings && \
-    curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/etc/apt/keyrings/githubcli-archive-keyring.gpg && \
+    wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg | tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null && \
     chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg && \
     echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null && \
     apt-get update && \
