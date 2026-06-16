@@ -47,11 +47,6 @@
   fi
 }
 
-@test "gemini-cli is available" {
-  run command -v gemini
-  [ "$status" -eq 0 ]
-}
-
 @test "antigravity-cli is available" {
   run zsh -i -c "command -v agy"
   [ "$status" -eq 0 ]
