@@ -19,3 +19,9 @@ else
     echo "Error: agy installation failed."
     exit 1
 fi
+
+# --- Install Antigravity Plugins ---
+{{- range .antigravity.plugins }}
+echo "Installing antigravity plugin: {{ . }}..."
+"$HOME/.local/bin/agy" plugin install "{{ . }}" || true
+{{- end }}
