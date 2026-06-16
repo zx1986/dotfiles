@@ -21,7 +21,9 @@ else
 fi
 
 # --- Install Antigravity Plugins ---
+{{- if not (index . "is_offline") }}
 {{- range .antigravity.plugins }}
 echo "Installing antigravity plugin: {{ . }}..."
-"$HOME/.local/bin/agy" plugin install "{{ . }}" || true
+"$HOME/.local/bin/agy" plugin install "{{ . }}" || echo "Warning: Failed to install plugin {{ . }}"
+{{- end }}
 {{- end }}
