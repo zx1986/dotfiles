@@ -9,6 +9,6 @@ user:
   email: "zx1986@gmail.com"
   username: "zx1986"
 
-gemini:
-  extensions:
+antigravity:
+  plugins:
     - https://github.com/obra/superpowers
