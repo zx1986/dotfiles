@@ -4,4 +4,3 @@ check "APT commands in install script" "grep -q 'apt-get install' \$TMP_HOME/00_
 check "gh in apt install list" "grep -E -q 'apt-get install.*\bgh\b' \$TMP_HOME/00_install_packages.sh"
 check "Font installation script rendered" "grep -q 'JetBrainsMono' \$TMP_HOME/after_install_fonts.sh"
 check "Font version is correct" "grep -q 'version=\"v3.2.1\"' \$TMP_HOME/after_install_fonts.sh"
-check "SourceCodePro font included" "grep -q 'SourceCodePro' \$TMP_HOME/after_install_fonts.sh"

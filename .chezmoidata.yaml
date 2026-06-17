@@ -3,7 +3,6 @@ fonts:
   version: "v3.2.1"
   selected:
     - JetBrainsMono
-    - SourceCodePro
 user:
   name: "張旭"
   email: "zx1986@gmail.com"
