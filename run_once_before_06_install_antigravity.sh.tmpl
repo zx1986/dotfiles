@@ -5,6 +5,7 @@
 
 set -e
 
+{{- if not (index . "is_offline") }}
 if [ ! -f "$HOME/.local/bin/agy" ]; then
     echo "Installing antigravity-cli..."
     curl -fsSL https://antigravity.google/cli/install.sh | bash
@@ -19,6 +20,13 @@ else
     echo "Error: agy installation failed."
     exit 1
 fi
+{{- else }}
+if [ -f "$HOME/.local/bin/agy" ]; then
+    echo "Offline mode: using pre-installed antigravity-cli from home snapshot."
+else
+    echo "Offline mode: antigravity-cli not found, skipping."
+fi
+{{- end }}
 
 # --- Install Antigravity Plugins ---
 {{- if not (index . "is_offline") }}
