@@ -3,22 +3,28 @@ set -e
 
 # Install Prezto
 if [ ! -d "$HOME/.zprezto" ]; then
+  {{- if not (index . "is_offline") }}
   if command -v git >/dev/null; then
     echo "Installing Prezto from GitHub..."
     git clone --recursive https://github.com/sorin-ionescu/prezto.git "$HOME/.zprezto"
   else
     echo "WARN: Cannot install Prezto (no git)"
   fi
+  {{- else }}
+  echo "Offline mode: skipping Prezto clone."
+  {{- end }}
 fi
 
 # Install Prezto Contrib (belak/prezto-contrib)
 if [ -d "$HOME/.zprezto" ] && [ ! -d "$HOME/.zprezto/contrib" ]; then
+  {{- if not (index . "is_offline") }}
   if command -v git >/dev/null; then
     echo "Installing Prezto Contrib from GitHub..."
     git clone --recursive https://github.com/belak/prezto-contrib "$HOME/.zprezto/contrib"
   else
     echo "WARN: Cannot install Prezto Contrib (no git)"
   fi
+  {{- end }}
 fi
 
 # Create Prezto symlinks
