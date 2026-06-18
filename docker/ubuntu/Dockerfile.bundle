@@ -11,7 +11,9 @@ RUN rm -f /etc/apt/apt.conf.d/docker-clean && \
     echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null && \
     apt-get update && \
     apt-get install -d -y \
-    zsh tmux git curl wget unzip build-essential fd-find bat fzf tig ripgrep gh
+    zsh tmux git curl wget unzip build-essential fd-find bat fzf tig ripgrep gh \
+    bats tree silversearcher-ag
+RUN wget -q https://github.com/dandavison/delta/releases/download/0.18.2/git-delta_0.18.2_amd64.deb -O /offline/debs/git-delta_0.18.2_amd64.deb
 RUN cp /var/cache/apt/archives/*.deb /offline/debs/
 
 # Stage 2: Build the actual bundle environment
