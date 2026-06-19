@@ -11,3 +11,4 @@ user:
 antigravity:
   plugins:
     - https://github.com/obra/superpowers
+    - https://github.com/DietrichGebert/ponytail
