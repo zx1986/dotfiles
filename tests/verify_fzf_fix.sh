@@ -11,7 +11,7 @@ fi
 # Extract the fzf block and some context
 # We'll use a subshell to avoid polluting the current shell
 # and to capture any stderr from 'local' usage at global scope.
-ERROR_OUTPUT=$(zsh -c "source $ZSHRC_PATH" 2>&1)
+ERROR_OUTPUT=$(zsh -c "stty() { :; }; source \"$ZSHRC_PATH\"" 2>&1)
 EXIT_CODE=$?
 
 if [[ $EXIT_CODE -ne 0 ]]; then
