@@ -34,7 +34,7 @@ find . -maxdepth 1 -name "run_*" | while read -r f; do
   f="${f#./}"
   # Map source name to target name (usually just removing run_... prefix and .tmpl)
   # For our project, we have run_once_before_00_install_packages.sh.tmpl -> 00_install_packages.sh
-  TARGET_NAME=$(echo "$f" | sed 's/^run_once_before_//' | sed 's/^run_once_//' | sed 's/^run_always_//' | sed 's/\.tmpl$//')
+  TARGET_NAME=$(echo "$f" | sed 's/^run_once_before_//' | sed 's/^run_onchange_before_//' | sed 's/^run_once_//' | sed 's/^run_always_//' | sed 's/\.tmpl$//')
   
   chezmoi execute-template \
     -f \
