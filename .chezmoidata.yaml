@@ -12,6 +12,12 @@ antigravity:
   plugins:
     - https://github.com/obra/superpowers
     - https://github.com/DietrichGebert/ponytail
-    - https://github.com/Egonex-AI/Understand-Anything
     - https://github.com/mattpocock/skills
+
+ai_tools:
+  npm_globals:
+    - "@colbymchenry/codegraph"
+    - neovim
+  npx_skills:
+    - "tt-a1i/archify"
 

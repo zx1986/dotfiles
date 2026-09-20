@@ -6,6 +6,5 @@ check ".zshrc contains fzf_shell_paths" "grep -q 'fzf_shell_paths' \$TMP_HOME/.z
 # Add some checks for directories we expect to exist
 check ".tmux.conf.local exists" "[[ -f \$TMP_HOME/.tmux.conf.local ]]"
 check "antigravity installation script rendered" "[[ -f \$TMP_HOME/06_install_antigravity.sh ]]"
-check "antigravity installation script installs Egonex-AI/Understand-Anything" "grep -q 'Understand-Anything' \$TMP_HOME/06_install_antigravity.sh"
 check "antigravity installation script installs mattpocock/skills" "grep -q 'mattpocock/skills' \$TMP_HOME/06_install_antigravity.sh"
 
