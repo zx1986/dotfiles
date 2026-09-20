@@ -1,0 +1,42 @@
+#!/bin/bash
+set -e
+
+{{ if eq .chezmoi.os "darwin" -}}
+{{- if not (index . "is_offline") }}
+# === AI Tools Installation (macOS) ===
+# Data-driven from .chezmoidata.yaml ai_tools section.
+# This script re-runs whenever the tool lists change (run_onchange).
+
+# --- npm global packages ---
+if command -v npm >/dev/null 2>&1; then
+  echo "Installing npm global packages..."
+  {{- range .ai_tools.npm_globals }}
+  if ! npm list -g "{{ . }}" >/dev/null 2>&1; then
+    echo "  Installing {{ . }}..."
+    npm install -g "{{ . }}"
+  else
+    echo "  {{ . }} already installed."
+  fi
+  {{- end }}
+else
+  echo "Warning: npm not found, skipping npm global packages."
+fi
+
+# --- npx skills ---
+if command -v npx >/dev/null 2>&1; then
+  echo "Installing npx skills..."
+  {{- range .ai_tools.npx_skills }}
+  echo "  Installing skill {{ . }}..."
+  npx -y skills add "{{ . }}" -g --yes || echo "Warning: Failed to install skill {{ . }}"
+  {{- end }}
+else
+  echo "Warning: npx not found, skipping npx skills."
+fi
+
+echo "AI tools installation complete."
+{{- else }}
+echo "Offline mode: skipping AI tools installation."
+{{- end }}
+{{ else -}}
+echo "AI tools installation: Linux support not yet implemented."
+{{ end -}}
