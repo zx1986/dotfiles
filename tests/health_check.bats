@@ -96,3 +96,8 @@
   [ "$status" -eq 0 ]
 }
 
+@test "codegraph is available" {
+  run command -v codegraph
+  [ "$status" -eq 0 ]
+}
+
