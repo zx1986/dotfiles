@@ -15,4 +15,6 @@ if [[ "$OS_TYPE" == "darwin" ]]; then
 else
   check "ai_tools script renders Linux placeholder" "grep -q 'Linux support not yet implemented' \$TMP_HOME/07_install_ai_tools.sh"
 fi
-
+check "agy skills.json rendered" "[[ -f \$TMP_HOME/.gemini/config/skills.json ]]"
+check "agy skills.json mounts ~/.agents/skills" "grep -q '~/.agents/skills' \$TMP_HOME/.gemini/config/skills.json"
+check ".codegraph directory is ignored by chezmoi" "[[ ! -d \$TMP_HOME/.codegraph ]]"
