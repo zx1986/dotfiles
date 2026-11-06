@@ -22,13 +22,42 @@ else
   echo "Warning: npm not found, skipping npm global packages."
 fi
 
-# --- npx skills ---
+# --- npx skills (declarative sync) ---
 if command -v npx >/dev/null 2>&1; then
-  echo "Installing npx skills..."
+  echo "Syncing npx skills..."
+  SKILLS_DIR="$HOME/.agents/skills"
+  mkdir -p "$SKILLS_DIR"
+
   {{- range .ai_tools.npx_skills }}
-  echo "  Installing skill {{ . }}..."
-  npx -y skills add "{{ . }}" -g --yes || echo "Warning: Failed to install skill {{ . }}"
+  missing_skills=()
+  {{- range .skills }}
+  if [ ! -d "$SKILLS_DIR/{{ . }}" ]; then
+    missing_skills+=("{{ . }}")
+  fi
   {{- end }}
+  if [ ${#missing_skills[@]} -gt 0 ]; then
+    echo "  Installing missing skills from {{ .repo }}: ${missing_skills[*]}..."
+    npx -y skills add "{{ .repo }}" -g -a antigravity-cli -s "${missing_skills[@]}" -y || echo "Warning: Failed to install skills from {{ .repo }}"
+  else
+    echo "  All skills from {{ .repo }} already installed."
+  fi
+  {{- end }}
+
+  # Prune skills not declared in .chezmoidata.yaml
+  declared_skills=" {{ range .ai_tools.npx_skills }}{{ range .skills }}{{ . }} {{ end }}{{ end }}"
+  extra_skills=()
+  for dir in "$SKILLS_DIR"/*; do
+    [ -d "$dir" ] || continue
+    skill_name=$(basename "$dir")
+    case "$declared_skills" in
+      *" $skill_name "*) ;;
+      *) extra_skills+=("$skill_name") ;;
+    esac
+  done
+  if [ ${#extra_skills[@]} -gt 0 ]; then
+    echo "  Removing unlisted skills: ${extra_skills[*]}..."
+    npx -y skills remove -g -s "${extra_skills[@]}" -y || echo "Warning: Failed to remove unlisted skills"
+  fi
 else
   echo "Warning: npx not found, skipping npx skills."
 fi

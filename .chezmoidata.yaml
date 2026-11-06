@@ -12,12 +12,40 @@ antigravity:
   plugins:
     - https://github.com/obra/superpowers
     - https://github.com/DietrichGebert/ponytail
-    - https://github.com/mattpocock/skills
 
 ai_tools:
   npm_globals:
     - "@colbymchenry/codegraph"
     - neovim
   npx_skills:
-    - "tt-a1i/archify"
-
+    - repo: "mattpocock/skills"
+      skills:
+        - ask-matt
+        - code-review
+        - codebase-design
+        - diagnosing-bugs
+        - domain-modeling
+        - git-guardrails-claude-code
+        - grill-me
+        - grill-with-docs
+        - grilling
+        - handoff
+        - implement
+        - improve-codebase-architecture
+        - migrate-to-shoehorn
+        - prototype
+        - research
+        - resolving-merge-conflicts
+        - scaffold-exercises
+        - setup-matt-pocock-skills
+        - setup-pre-commit
+        - tdd
+        - teach
+        - to-spec
+        - to-tickets
+        - triage
+        - wayfinder
+        - writing-great-skills
+    - repo: "vercel-labs/skills"
+      skills:
+        - find-skills
