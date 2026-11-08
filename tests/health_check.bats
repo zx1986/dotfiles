@@ -101,3 +101,14 @@
   [ "$status" -eq 0 ]
 }
 
+@test "antigravity skills.json mounts ~/.agents/skills" {
+  [ -f "$HOME/.gemini/config/skills.json" ]
+  run grep -q "~/.agents/skills" "$HOME/.gemini/config/skills.json"
+  [ "$status" -eq 0 ]
+}
+
+@test "curated agent skills are installed in ~/.agents/skills" {
+  [ -d "$HOME/.agents/skills/tdd" ]
+  [ -d "$HOME/.agents/skills/find-skills" ]
+}
+
