@@ -96,6 +96,11 @@
   [ "$status" -eq 0 ]
 }
 
+@test "black is available" {
+  run zsh -i -c "command -v black"
+  [ "$status" -eq 0 ]
+}
+
 @test "codegraph is available" {
   run command -v codegraph
   [ "$status" -eq 0 ]
