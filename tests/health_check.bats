@@ -97,7 +97,7 @@
 }
 
 @test "black is available" {
-  run zsh -i -c "command -v black"
+  run zsh -i -c "black --version"
   [ "$status" -eq 0 ]
 }
 

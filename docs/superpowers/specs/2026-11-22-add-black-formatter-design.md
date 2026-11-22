@@ -71,4 +71,4 @@
 
 ## Migration Note
 
-The install script is `run_once`, so machines that already ran it will not re-run it automatically. On existing machines, install manually (`brew install black` / `sudo apt-get install -y pipx && pipx install black`) or reset script state with `chezmoi state delete-bucket --bucket=scriptState`.
+Chezmoi `run_once_` scripts track the SHA-256 of their rendered content in `scriptState`. Because this change alters the rendered online install script, the next `chezmoi apply` on existing online machines re-runs `00_install_packages.sh` once, and all steps in the script are idempotent (brew/apt installs, guarded delta/asdf/black installs). Offline-mode machines render an unchanged script and do not re-run.
