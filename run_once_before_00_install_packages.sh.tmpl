@@ -51,7 +51,7 @@ if command -v apt-get >/dev/null; then
   echo "Installing core packages via apt..."
   sudo apt-get update -qq
   # Added packages for parity with macOS and to pass verification
-  sudo apt-get install -y zsh tmux git curl wget unzip build-essential fd-find bat fzf tig ripgrep bats neovim tree silversearcher-ag gh
+  sudo apt-get install -y zsh tmux git curl wget unzip build-essential fd-find bat fzf tig ripgrep bats neovim tree silversearcher-ag gh pipx
 
   # --- Install delta via dpkg ---
   DELTA_VERSION="0.18.2"
@@ -63,6 +63,12 @@ if command -v apt-get >/dev/null; then
     wget -q "${DELTA_URL}" -O "/tmp/${DELTA_DEB}"
     sudo dpkg -i "/tmp/${DELTA_DEB}"
     rm "/tmp/${DELTA_DEB}"
+  fi
+
+  # --- Install black via pipx ---
+  if ! command -v black >/dev/null && [ ! -x "$HOME/.local/bin/black" ]; then
+    echo "Installing black via pipx..."
+    pipx install black
   fi
 fi
 
