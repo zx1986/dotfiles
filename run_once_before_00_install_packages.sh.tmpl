@@ -15,7 +15,7 @@ if ! command -v brew >/dev/null; then
 fi
 
 echo "Installing Brew Packages..."
-brew install git tmux tig bit-git curl asdf zsh coreutils neovim ripgrep fd gcc fzf bats tree the_silver_searcher git-delta less gh black
+brew install {{ range $i, $p := .packages.darwin }}{{ if $i }} {{ end }}{{ $p }}{{ end }}
 
 # ASDF Setup (macOS)
 if [ -f "$(brew --prefix asdf)/libexec/asdf.sh" ]; then
@@ -51,10 +51,10 @@ if command -v apt-get >/dev/null; then
   echo "Installing core packages via apt..."
   sudo apt-get update -qq
   # Added packages for parity with macOS and to pass verification
-  sudo apt-get install -y zsh tmux git curl wget unzip build-essential fd-find bat fzf tig ripgrep bats neovim tree silversearcher-ag gh pipx
+  sudo apt-get install -y {{ range $i, $p := .packages.linux }}{{ if $i }} {{ end }}{{ $p }}{{ end }}
 
   # --- Install delta via dpkg ---
-  DELTA_VERSION="0.18.2"
+  DELTA_VERSION="{{ .packages.delta_version }}"
   DELTA_DEB="git-delta_${DELTA_VERSION}_amd64.deb"
   DELTA_URL="https://github.com/dandavison/delta/releases/download/${DELTA_VERSION}/${DELTA_DEB}"
 
@@ -96,18 +96,3 @@ echo "Offline mode detected. Skipping internet-dependent installations (asdf, et
 {{- end }}
 
 {{ end -}}
-
-# === Common ASDF Installation ===
-{{- if not (index . "is_offline") }}
-export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
-
-if command -v asdf >/dev/null; then
-  asdf plugin add golang || true
-  asdf plugin add terraform || true
-
-  if [ -f "$HOME/.tool-versions" ]; then
-      echo "Installing ASDF versions..."
-      asdf install
-  fi
-fi
-{{- end }}

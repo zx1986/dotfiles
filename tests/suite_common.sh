@@ -10,15 +10,14 @@ check "antigravity installation script installs superpowers" "grep -q 'obra/supe
 check "antigravity installation script installs ponytail" "grep -q 'DietrichGebert/ponytail' \$TMP_HOME/06_install_antigravity.sh"
 check "antigravity installation script does not install mattpocock/skills as plugin" "! grep -q 'mattpocock/skills' \$TMP_HOME/06_install_antigravity.sh"
 check "ai_tools installation script rendered" "[[ -f \$TMP_HOME/07_install_ai_tools.sh ]]"
-if [[ "$OS_TYPE" == "darwin" ]]; then
-  check "ai_tools script installs codegraph" "grep -q '@colbymchenry/codegraph' \$TMP_HOME/07_install_ai_tools.sh"
-  check "ai_tools script installs neovim npm" "grep -q 'neovim' \$TMP_HOME/07_install_ai_tools.sh"
-  check "ai_tools script syncs mattpocock/skills via npx skills" "grep -q 'npx -y skills add \"mattpocock/skills\" -g -a antigravity-cli -s' \$TMP_HOME/07_install_ai_tools.sh"
-  check "ai_tools script syncs vercel-labs/skills via npx skills" "grep -q 'npx -y skills add \"vercel-labs/skills\" -g -a antigravity-cli -s' \$TMP_HOME/07_install_ai_tools.sh"
-  check "ai_tools script prunes unlisted skills" "grep -q 'npx -y skills remove -g -s' \$TMP_HOME/07_install_ai_tools.sh"
-else
-  check "ai_tools script renders Linux placeholder" "grep -q 'Linux support not yet implemented' \$TMP_HOME/07_install_ai_tools.sh"
-fi
+check "ai_tools script installs codegraph" "grep -q '@colbymchenry/codegraph' \$TMP_HOME/07_install_ai_tools.sh"
+check "ai_tools script installs neovim npm" "grep -q 'neovim' \$TMP_HOME/07_install_ai_tools.sh"
+check "ai_tools script syncs mattpocock/skills via npx skills" "grep -q 'npx -y skills add \"mattpocock/skills\" -g -a antigravity-cli -s' \$TMP_HOME/07_install_ai_tools.sh"
+check "ai_tools script syncs vercel-labs/skills via npx skills" "grep -q 'npx -y skills add \"vercel-labs/skills\" -g -a antigravity-cli -s' \$TMP_HOME/07_install_ai_tools.sh"
+check "ai_tools script prunes unlisted skills" "grep -q 'npx -y skills remove -g -s' \$TMP_HOME/07_install_ai_tools.sh"
+check "asdf versions installation script rendered" "[[ -f \$TMP_HOME/after_01_install_asdf_versions.sh ]]"
+check "asdf versions script tracks .tool-versions hash" "grep -q '^# sha256: ' \$TMP_HOME/after_01_install_asdf_versions.sh"
+check "asdf versions script runs asdf install" "grep -q 'asdf install' \$TMP_HOME/after_01_install_asdf_versions.sh"
 check "agy skills.json rendered" "[[ -f \$TMP_HOME/.gemini/config/skills.json ]]"
 check "agy skills.json mounts ~/.agents/skills" "grep -q '~/.agents/skills' \$TMP_HOME/.gemini/config/skills.json"
 check ".codegraph directory is ignored by chezmoi" "[[ ! -d \$TMP_HOME/.codegraph ]]"

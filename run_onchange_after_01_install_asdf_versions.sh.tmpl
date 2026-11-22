@@ -1,0 +1,35 @@
+#!/bin/sh
+set -e
+
+# Re-run whenever .tool-versions changes:
+# sha256: {{ include "dot_tool-versions" | sha256sum }}
+
+{{- if not (index . "is_offline") }}
+{{ if eq .chezmoi.os "darwin" -}}
+if command -v brew >/dev/null 2>&1; then
+  if [ -f "$(brew --prefix asdf)/libexec/asdf.sh" ]; then
+    . "$(brew --prefix asdf)/libexec/asdf.sh"
+  elif [ -f "$(brew --prefix asdf)/asdf.sh" ]; then
+    . "$(brew --prefix asdf)/asdf.sh"
+  fi
+fi
+{{ else -}}
+if [ -f "$HOME/.asdf/asdf.sh" ]; then
+  . "$HOME/.asdf/asdf.sh"
+fi
+{{ end -}}
+
+export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
+
+if command -v asdf >/dev/null 2>&1; then
+  asdf plugin add golang || true
+  asdf plugin add terraform || true
+
+  if [ -f "$HOME/.tool-versions" ]; then
+    echo "Installing ASDF versions..."
+    asdf install
+  fi
+fi
+{{- else }}
+echo "Offline mode: skipping ASDF versions installation."
+{{- end }}

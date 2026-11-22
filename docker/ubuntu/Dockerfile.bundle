@@ -1,6 +1,7 @@
 # Stage 1: Download debs in a clean environment
 FROM ubuntu:22.04 AS downloader
 ENV DEBIAN_FRONTEND=noninteractive
+COPY .chezmoidata.yaml /tmp/.chezmoidata.yaml
 RUN rm -f /etc/apt/apt.conf.d/docker-clean && \
     mkdir -p /offline/debs && \
     apt-get update && \
@@ -10,10 +11,10 @@ RUN rm -f /etc/apt/apt.conf.d/docker-clean && \
     chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg && \
     echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null && \
     apt-get update && \
-    apt-get install -d -y \
-    zsh tmux git curl wget unzip build-essential fd-find bat fzf tig ripgrep gh \
-    bats tree silversearcher-ag
-RUN wget -q https://github.com/dandavison/delta/releases/download/0.18.2/git-delta_0.18.2_amd64.deb -O /offline/debs/git-delta_0.18.2_amd64.deb
+    LINUX_PKGS=$(awk '/^packages:/{p=1;next} p && /^[^ ]/{exit} p && /^  linux:/{l=1;next} l && /^  [^ ]/{l=0} l && /^    - /{print $2}' /tmp/.chezmoidata.yaml | tr '\n' ' ') && \
+    apt-get install -d -y $LINUX_PKGS
+RUN DELTA_VERSION=$(awk '/^packages:/{p=1;next} p && /^[^ ]/{exit} p && /^  delta_version:/{gsub(/"/,"",$2); print $2}' /tmp/.chezmoidata.yaml) && \
+    wget -q "https://github.com/dandavison/delta/releases/download/${DELTA_VERSION}/git-delta_${DELTA_VERSION}_amd64.deb" -O "/offline/debs/git-delta_${DELTA_VERSION}_amd64.deb"
 RUN cp /var/cache/apt/archives/*.deb /offline/debs/
 
 # Stage 2: Build the actual bundle environment

@@ -1,9 +1,8 @@
 #!/bin/bash
 set -e
 
-{{ if eq .chezmoi.os "darwin" -}}
 {{- if not (index . "is_offline") }}
-# === AI Tools Installation (macOS) ===
+# === AI Tools Installation ===
 # Data-driven from .chezmoidata.yaml ai_tools section.
 # This script re-runs whenever the tool lists change (run_onchange).
 
@@ -66,6 +65,3 @@ echo "AI tools installation complete."
 {{- else }}
 echo "Offline mode: skipping AI tools installation."
 {{- end }}
-{{ else -}}
-echo "AI tools installation: Linux support not yet implemented."
-{{ end -}}

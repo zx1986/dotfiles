@@ -49,3 +49,46 @@ ai_tools:
     - repo: "vercel-labs/skills"
       skills:
         - find-skills
+
+packages:
+  delta_version: "0.18.2"
+  darwin:
+    - git
+    - tmux
+    - tig
+    - bit-git
+    - curl
+    - asdf
+    - zsh
+    - coreutils
+    - neovim
+    - ripgrep
+    - fd
+    - gcc
+    - fzf
+    - bats
+    - tree
+    - the_silver_searcher
+    - git-delta
+    - less
+    - gh
+    - black
+  linux:
+    - zsh
+    - tmux
+    - git
+    - curl
+    - wget
+    - unzip
+    - build-essential
+    - fd-find
+    - bat
+    - fzf
+    - tig
+    - ripgrep
+    - bats
+    - neovim
+    - tree
+    - silversearcher-ag
+    - gh
+    - pipx
